@@ -1,29 +1,34 @@
 /* ============================================================
    khalil store — Premium Sneaker Store v2
    --------------------------------------------------------
-   Design language: Bold monochrome streetwear meets sport-tech.
+   Design language: Streetwear neutrals with a live sneaker-color wash.
    Inspired by:
-     - ATLETE TREND mockup: clean white background, monochrome streetwear accents
-     - Nike luxury mockups: deep black hero, pill-shaped CTAs
-     - Streetwear 3D mockup: high-radius cards, dual CTA
-     - Learn up mockup: high-contrast monochrome copy
+     - clean catalog surfaces with live, shoe-matched color fields
+     - dark streetwear fades, pill-shaped CTAs and oversized typography
+     - circular side lighting with a directional, opposite cast shadow
    Stack: pure HTML/CSS/JS (ES modules). Zero dependencies.
    ============================================================ */
 
-/* ---------- Design tokens (CSS variables) ---------- */
+/* ---------- Live sneaker theme + design tokens ---------- */
+@property --site-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #118E97;
+}
 :root {
-  /* Brand neutrals — monochrome white, silver and deep ink */
+  /* Neutral surfaces stay readable while accents follow the active sneaker. */
+  --site-color:     #118E97;
   --ink:           #111216;      /* near-black for headers and CTAs */
   --ink-soft:      #202226;
-  --paper:         #FAFAFB;      /* neutral-white main background */
-  --paper-2:       #F1F2F4;      /* slightly darker alt panels */
-  --card:          #FFFFFF;      /* pure white product/section cards */
-  --line:          #E2E4E8;      /* hair-line borders */
-  --line-soft:     #EFF0F2;
+  --paper:         color-mix(in srgb, #FAFAFB 88%, var(--site-color) 12%);
+  --paper-2:       color-mix(in srgb, #F1F2F4 74%, var(--site-color) 26%);
+  --card:          color-mix(in srgb, #FFFFFF 96%, var(--site-color) 4%);
+  --line:          color-mix(in srgb, #E2E4E8 80%, var(--site-color) 20%);
+  --line-soft:     color-mix(in srgb, #EFF0F2 84%, var(--site-color) 16%);
   --muted:         #737780;
   --muted-2:       #A1A5AD;
-  --silver:        #BBC1CA;      /* silver monochrome accent */
-  --graphite:      #62676F;      /* sale badge + remove link */
+  --silver:        var(--site-color);
+  --graphite:      color-mix(in srgb, var(--site-color) 58%, #111216 42%);
 
   /* Sizing & shapes */
   --radius-xs:     10px;
@@ -47,6 +52,7 @@
   /* Type */
   --font-ar:       "Cairo", "Arial Black", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --font-en:       "Barlow Condensed", "Arial Narrow", "Arial", sans-serif;
+  transition: --site-color 1.12s cubic-bezier(.22,1,.36,1);
 }
 
 /* ---------- Reset ---------- */
@@ -57,8 +63,8 @@ body {
   font-family: var(--font-ar);
   font-weight: 700;
   color: var(--ink);
-  background: var(--paper);
-  background-image: radial-gradient(ellipse at 8% 8%, rgba(193,199,208,.14), transparent 28%), radial-gradient(ellipse at 92% 28%, rgba(220,224,230,.2), transparent 24%), linear-gradient(165deg, #fff 0%, var(--paper) 58%, #F0F1F3 100%);
+  background: #090A0C;
+  background-image: radial-gradient(ellipse 112% 54% at 50% 0%, color-mix(in srgb, var(--site-color) 68%, #FFFFFF 32%) 0%, color-mix(in srgb, var(--site-color) 34%, transparent) 48%, transparent 100%), linear-gradient(165deg, color-mix(in srgb, var(--site-color) 38%, #111216 62%) 0%, #111216 74%, #08090B 100%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   line-height: 1.45;
@@ -91,7 +97,7 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(250,250,251,.86);
+  background: color-mix(in srgb, rgba(250,250,251,.9) 84%, var(--site-color) 16%);
   -webkit-backdrop-filter: saturate(180%) blur(12px);
   backdrop-filter: saturate(180%) blur(12px);
   border-bottom: 1px solid var(--line);
@@ -288,9 +294,8 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
 .hero {
   position: relative;
   background:
-    radial-gradient(120% 80% at 0% 0%, #fff 0%, transparent 60%),
-    radial-gradient(80% 60% at 100% 100%, var(--paper-2) 0%, transparent 60%),
-    var(--paper);
+    radial-gradient(100% 110% at 8% 0%, color-mix(in srgb, var(--site-color) 68%, #fff 32%) 0%, transparent 68%),
+    linear-gradient(180deg, color-mix(in srgb, var(--site-color) 62%, #fff 38%) 0%, var(--paper) 76%, color-mix(in srgb, var(--site-color) 24%, #111216 76%) 94%, #08090B 100%);
   overflow: hidden;
 }
 .hero .container {
@@ -341,8 +346,13 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
   display: flex;
   gap: 36px;
   margin-top: 36px;
-  padding-top: 28px;
-  border-top: 1px solid var(--line);
+  padding: 18px 24px;
+  border: 1px solid rgba(255,255,255,.52);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 30px rgba(17,18,22,.08);
 }
 .hero-stats div b {
   font-family: var(--font-en);
@@ -354,7 +364,7 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
 .hero-stats div span { font-size: 12.5px; color: var(--muted); }
 
 .hero-media { order: 1; position: relative; isolation: isolate; }
-.hero-media::before { content: ""; position: absolute; z-index: 0; inset: 1% -4% 4%; border-radius: 48%; pointer-events: none; background: radial-gradient(ellipse at 30% 70%, rgba(137,144,155,.3), transparent 34%), radial-gradient(ellipse at 73% 27%, rgba(222,225,231,.82), transparent 44%), conic-gradient(from 215deg at 52% 49%, transparent 0 20%, rgba(171,178,188,.2) 31%, transparent 45%, rgba(90,96,106,.1) 59%, transparent 76%); filter: blur(30px); opacity: .48; transform: scale(1.06) rotate(-4deg); animation: silver-haze-wave 13s ease-in-out infinite alternate; }
+.hero-media::before { content: ""; position: absolute; z-index: 0; inset: 1% -4% 4%; border-radius: 48%; pointer-events: none; background: radial-gradient(ellipse at 36% 62%, color-mix(in srgb, var(--site-color) 62%, transparent) 0%, transparent 44%), radial-gradient(ellipse at 73% 27%, color-mix(in srgb, var(--site-color) 42%, #fff 58%) 0%, transparent 48%), conic-gradient(from 215deg at 52% 49%, transparent 0 20%, color-mix(in srgb, var(--site-color) 36%, transparent) 31%, transparent 45%, color-mix(in srgb, var(--site-color) 22%, transparent) 59%, transparent 76%); filter: blur(30px); opacity: .72; transform: scale(1.06) rotate(-4deg); animation: silver-haze-wave 13s ease-in-out infinite alternate; }
 .hero-media .layer-back {
   position: absolute;
   inset: 26px -22px -22px 26px;
@@ -387,14 +397,15 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
 .sneaker-stage { position: relative; z-index: 2; min-height: 430px; display: grid; place-items: center; overflow: hidden; border-radius: var(--radius-xl); background: transparent; box-shadow: none; }
 .hero-carousel { position: absolute; inset: 0; z-index: 2; }
 .hero-slide { --slide-x: 54px; position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; visibility: hidden; pointer-events: none; transform: translate3d(var(--slide-x), 12px, 0) scale(.94) rotate(1deg); backface-visibility: hidden; will-change: opacity, transform; transition: opacity .92s cubic-bezier(.22,1,.36,1), transform 1.08s cubic-bezier(.22,1,.36,1), visibility 0s linear 1.08s; }
-.hero-slide::before { content: ""; position: absolute; z-index: 1; inset: -6%; border-radius: 50%; pointer-events: none; background: radial-gradient(ellipse at var(--light-x, 50%) var(--light-y, 48%), rgba(255,255,255,.32) 0%, rgba(255,255,255,.12) 14%, transparent 42%), radial-gradient(ellipse at 50% 56%, rgba(var(--shoe-rgb, 187,193,202),.32) 0%, rgba(var(--shoe-rgb, 187,193,202),.16) 34%, transparent 72%); filter: blur(20px); opacity: 0; transform: scale(.94); will-change: opacity, transform; transition: opacity .82s ease, transform 1.08s cubic-bezier(.22,1,.36,1); }
+.hero-slide::before { content: ""; position: absolute; z-index: 1; inset: -6%; border-radius: 50%; pointer-events: none; background: radial-gradient(ellipse 32% 26% at var(--light-x, 50%) var(--light-y, 48%), rgba(255,255,255,.26) 0%, rgba(255,255,255,.08) 38%, transparent 78%), radial-gradient(ellipse at 50% 56%, rgba(var(--shoe-rgb, 187,193,202),.48) 0%, rgba(var(--shoe-rgb, 187,193,202),.24) 36%, transparent 76%); filter: blur(20px); opacity: 0; transform: scale(.94); will-change: opacity, transform; transition: opacity .82s ease, transform 1.08s cubic-bezier(.22,1,.36,1); }
 .hero-carousel[data-direction="backward"] .hero-slide { --slide-x: -54px; }
 .hero-slide.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translate3d(0, 0, 0) scale(1) rotate(0); transition-delay: 0s; }
 .hero-slide.active::before { opacity: .94; transform: scale(1.06); }
-.floating-sneaker { position: relative !important; z-index: 2 !important; width: 92% !important; max-height: 430px !important; padding: 28px !important; background: transparent !important; border-radius: 0 !important; box-shadow: none !important; mix-blend-mode: normal; filter: drop-shadow(0 25px 16px rgba(17,18,22,.18)) saturate(1.12) contrast(1.04) !important; animation: sneakerFloat 4.8s ease-in-out infinite; transform-origin: 50% 55%; will-change: transform; }
-.shoe-spotlight { position: absolute; z-index: 3; top: 0; left: 0; width: clamp(140px, 36%, 230px); aspect-ratio: 1; border-radius: 50%; pointer-events: none; opacity: 0; transform: translate3d(50%, 50%, 0) translate(-50%, -50%); background: radial-gradient(circle, rgba(255,255,255,.68) 0%, rgba(255,255,255,.42) 9%, rgba(255,255,255,.2) 24%, rgba(255,255,255,.055) 48%, transparent 68%); mix-blend-mode: screen; filter: blur(2px) drop-shadow(0 0 32px rgba(255,255,255,.56)); transition: transform .96s cubic-bezier(.22,1,.36,1), opacity .42s ease; will-change: transform, opacity; }
+.floating-sneaker { position: relative !important; z-index: 2 !important; width: 92% !important; max-height: 430px !important; padding: 28px !important; background: transparent !important; border-radius: 0 !important; box-shadow: none !important; mix-blend-mode: normal; filter: drop-shadow(var(--shade-x, 0px) var(--shade-y, 22px) 18px rgba(5,6,8,.48)) saturate(1.14) contrast(1.06) !important; animation: sneakerFloat 4.8s ease-in-out infinite; transform-origin: 50% 55%; will-change: transform; }
+.shoe-spotlight { position: absolute; z-index: 3; top: 0; left: 0; width: clamp(150px, 31%, 210px); aspect-ratio: 1; border-radius: 50%; pointer-events: none; opacity: 0; transform: translate3d(50%, 50%, 0) translate(-50%, -50%); background: radial-gradient(circle, rgba(255,255,255,.94) 0%, rgba(255,255,255,.78) 7%, rgba(255,255,255,.48) 18%, rgba(255,255,255,.2) 38%, rgba(255,255,255,.045) 58%, transparent 73%); mix-blend-mode: screen; filter: blur(1.2px) drop-shadow(0 0 30px rgba(255,255,255,.82)); transition: transform .96s cubic-bezier(.22,1,.36,1), opacity .42s ease; will-change: transform, opacity; }
 .sneaker-stage.is-lit .shoe-spotlight { opacity: .96; }
-.sneaker-glow { position: absolute; width: 58%; height: 16%; bottom: 17%; left: 21%; border-radius: 50%; background: rgba(17,18,22,.20); filter: blur(18px); animation: sneakerShadow 4.8s ease-in-out infinite; }
+.sneaker-shadow-track { position: absolute; z-index: 1; inset: 0; pointer-events: none; will-change: transform; transition: transform .96s cubic-bezier(.22,1,.36,1); }
+.sneaker-glow { position: absolute; width: 58%; height: 15%; bottom: 17%; left: 21%; border-radius: 50%; background: rgba(8,9,11,.34); filter: blur(14px); animation: sneakerShadow 4.8s ease-in-out infinite; }
 .hero-orbit { position: absolute; z-index: 1; border: 1px solid rgba(183,190,200,.62); border-radius: 50%; pointer-events: none; }
 .orbit-one { width: 72%; height: 72%; left: 14%; top: 14%; transform: rotate(-22deg) skewX(-12deg); }
 .orbit-two { width: 92%; height: 38%; left: 4%; top: 30%; border-color: rgba(17,18,22,.12); transform: rotate(-16deg); }
@@ -430,7 +441,7 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
 /* brand strip between hero and grid */
 .brand-strip {
   border-block: 1px solid var(--line);
-  background: var(--card);
+  background: color-mix(in srgb, var(--card) 73%, var(--site-color) 27%);
 }
 .brand-strip ul {
   display: flex;
@@ -451,7 +462,7 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
 /* ============================================================
    SECTIONS
    ============================================================ */
-.section { padding: 80px 0; }
+.section { padding: 80px 0; background: linear-gradient(180deg, color-mix(in srgb, var(--site-color) 32%, #fff 68%) 0%, var(--paper) 70%, color-mix(in srgb, var(--site-color) 22%, #111216 78%) 93%, #08090B 100%); }
 .section-head {
   display: flex;
   align-items: flex-end;
@@ -665,7 +676,7 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
   position: absolute;
   width: 340px; height: 340px;
   border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(255,255,255,.12), transparent 60%);
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--site-color) 76%, transparent), transparent 68%);
   top: -120px; right: -120px;
   pointer-events: none;
 }
@@ -1266,7 +1277,7 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
    FOOTER
    ============================================================ */
 .site-footer {
-  background: var(--ink);
+  background: linear-gradient(132deg, color-mix(in srgb, var(--site-color) 24%, var(--ink) 76%) 0%, var(--ink) 56%, #08090B 100%);
   color: #BFC2C8;
   margin-top: 80px;
 }
@@ -1487,12 +1498,14 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
 .bottom-nav .nav-badge[hidden] { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
+  :root,
   .hero-media::before,
   .hero-slide,
   .hero-slide::before,
   .hero-slide-copy,
   .floating-sneaker,
   .shoe-spotlight,
+  .sneaker-shadow-track,
   .sneaker-glow,
   .carousel-dot,
   .bottom-nav,

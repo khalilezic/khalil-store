@@ -1,7 +1,7 @@
-# Khalil Store — Bold Streetwear Sneaker Storefront
+# Khalil Store — Dynamic Streetwear Sneaker Storefront
 
 A complete, dependency-free sneaker/shoe e-commerce storefront in a
-bold monochrome streetwear style. Built as plain HTML/CSS/JS (ES
+bold streetwear style with a live sneaker-color theme. Built as plain HTML/CSS/JS (ES
 modules) — no framework, no build step, no backend — so it is easy to
 open, read and hand off to any other AI model or developer.
 
@@ -17,17 +17,18 @@ localStorage persistence) and improves two layers:
 
 ### 1. Visual identity (design system)
 
-- **Monochrome palette** → black, white, cool gray and silver only;
-  former gold/red accents are now neutral graphite or silver.
+- **Live sneaker palette** → every hero slide changes the site-wide
+  accent and tinted surfaces; the full-page color wash fades elegantly
+  into graphite black while product cards stay crisp and readable.
 - **Streetwear typography** → heavy Arabic Cairo paired with compact,
   athletic Barlow Condensed for Latin headings, prices and labels.
-- **Atmosphere** → soft, moving silver haze gradients in the hero,
-  restrained glass highlights, and high-contrast black CTAs.
+- **Atmosphere** → vivid shoe-matched backgrounds, a circular side-lit
+  flashlight highlight, and a cast shadow that shifts opposite the light.
 - **Storefront details** → large cards, pill controls, and a floating
-  bottom dock with a sliding silver light indicator.
+  bottom dock with a sliding light indicator that follows the live theme.
 
-All tokens are defined as CSS variables on `:root` in `css/style.css`,
-so any future tweak is a one-line change.
+Design tokens live on `:root` in `css/style.css`; the hero carousel updates
+`--site-color` at runtime so the whole storefront follows the active shoe.
 
 ### 2. Bug fixes
 The original had two regressions that made the build feel unfinished:

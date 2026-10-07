@@ -114,10 +114,28 @@ function moveHeroSpotlight(slide, immediate = false) {
   const stage = document.querySelector(".sneaker-stage");
   const light = document.querySelector(".shoe-spotlight");
   if (!stage || !light || !slide) return;
+  const tone = slide.dataset.shoeColor;
+  if (/^#[\da-f]{6}$/i.test(tone || "")) {
+    document.documentElement.style.setProperty("--site-color", tone);
+  }
   const rect = stage.getBoundingClientRect();
   const x = rect.width * (Number(slide.dataset.lightX) || 50) / 100;
   const y = rect.height * (Number(slide.dataset.lightY) || 50) / 100;
   const transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+  const shadowTrack = stage.querySelector(".sneaker-shadow-track");
+  const shadowX = Number(slide.dataset.shadowX) || 0;
+  const shadowY = Number(slide.dataset.shadowY) || 0;
+  if (shadowTrack) {
+    const shadowTransform = `translate3d(${shadowX}px, ${shadowY}px, 0)`;
+    if (immediate) {
+      shadowTrack.style.transition = "none";
+      shadowTrack.style.transform = shadowTransform;
+      void shadowTrack.offsetWidth;
+      shadowTrack.style.removeProperty("transition");
+    } else {
+      shadowTrack.style.transform = shadowTransform;
+    }
+  }
   if (immediate) {
     light.style.transition = "none";
     light.style.transform = transform;
