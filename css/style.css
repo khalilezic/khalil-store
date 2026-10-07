@@ -1990,3 +1990,78 @@ body.home-theme .product-card .add-row .btn-primary {
   border-color: #17212b !important;
   color: #fff !important;
 }
+
+/* Slide-linked accents for the other interfaces; dock and product cards stay fixed. */
+body.site-theme:not(.home-theme) {
+  background-image:
+    radial-gradient(circle at var(--ambient-x) var(--ambient-y), color-mix(in srgb, var(--site-color) 15%, transparent), transparent 38%),
+    linear-gradient(145deg, #fbfdfe 0%, color-mix(in srgb, var(--site-color) 6%, #f1f7fa 94%) 100%);
+}
+body.site-theme:not(.home-theme) .section,
+body.site-theme:not(.home-theme) .brand-strip {
+  background:
+    radial-gradient(ellipse 72% 62% at var(--ambient-x) var(--ambient-y), color-mix(in srgb, var(--site-color) 12%, transparent), transparent 76%),
+    linear-gradient(180deg, #fff, color-mix(in srgb, var(--site-color) 6%, #f2f8fa 94%));
+}
+body.site-theme:not(.home-theme) .shop-layout aside,
+body.site-theme:not(.home-theme) .summary-card,
+body.site-theme:not(.home-theme) .form-grid,
+body.site-theme:not(.home-theme) .contact-card,
+body.site-theme:not(.home-theme) .perk-card {
+  background: color-mix(in srgb, #fff 92%, var(--site-color) 8%);
+  border-color: color-mix(in srgb, #d9e5eb 72%, var(--site-color) 28%);
+}
+body.site-theme:not(.home-theme) .shop-head h1,
+body.site-theme:not(.home-theme) .cart-page h1,
+body.site-theme:not(.home-theme) .fav-page h1,
+body.site-theme:not(.home-theme) .checkout-page h1,
+body.site-theme:not(.home-theme) .form-section-title,
+body.site-theme:not(.home-theme) .filter-group h4 {
+  text-decoration-color: var(--site-color);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 7px;
+}
+body.site-theme:not(.home-theme) .btn-primary,
+body.site-theme:not(.home-theme) .newsletter-row .btn-primary,
+body.site-theme:not(.home-theme) .promo-banner .btn-primary {
+  background: var(--site-color) !important;
+  border-color: var(--site-color) !important;
+  color: #17212b !important;
+  box-shadow: 0 9px 24px color-mix(in srgb, var(--site-color) 26%, transparent);
+}
+body.site-theme:not(.home-theme) .btn-primary:hover,
+body.site-theme:not(.home-theme) .newsletter-row .btn-primary:hover,
+body.site-theme:not(.home-theme) .promo-banner .btn-primary:hover {
+  background: color-mix(in srgb, var(--site-color) 78%, #fff 22%) !important;
+}
+body.site-theme:not(.home-theme) .chip.active,
+body.site-theme:not(.home-theme) .size-pill.active,
+body.site-theme:not(.home-theme) .pay-chip.active,
+body.site-theme:not(.home-theme) .tab-btn.active {
+  border-color: var(--site-color) !important;
+  color: #17212b !important;
+  background: color-mix(in srgb, var(--site-color) 22%, #fff 78%) !important;
+}
+body.site-theme:not(.home-theme) .header-search:focus-within,
+body.site-theme:not(.home-theme) .field input:focus,
+body.site-theme:not(.home-theme) .field select:focus,
+body.site-theme:not(.home-theme) .field textarea:focus {
+  border-color: var(--site-color) !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--site-color) 22%, transparent) !important;
+}
+body.site-theme:not(.home-theme) .badge-tag,
+body.site-theme:not(.home-theme) .order-success .check-circle {
+  background: var(--site-color) !important;
+  color: #17212b !important;
+}
+body.site-theme:not(.home-theme) .pdp-gallery-main,
+body.site-theme:not(.home-theme) .product-media,
+body.site-theme:not(.home-theme) .cart-item .thumb {
+  background: color-mix(in srgb, #f1f7fa 82%, var(--site-color) 18%) !important;
+}
+/* Keep these two areas intentionally independent from the slide color. */
+.bottom-nav,
+body.site-theme .bottom-nav,
+body.home-theme .bottom-nav,
+body.site-theme .product-card,
+body.home-theme .product-card { background: #fff !important; }
