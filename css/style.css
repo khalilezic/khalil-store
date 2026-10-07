@@ -2237,3 +2237,130 @@ body.home-theme .carousel-arrow-icon { width: 23px !important; height: 23px !imp
   body.site-theme .bottom-nav .nav-badge,
   body.home-theme .bottom-nav .nav-badge { background: #fff !important; color: #07090b !important; border-color: #07090b !important; }
 }
+
+/* HERO VISUAL REFRESH — keeps the existing live background, carousel and motion intact. */
+body.home-theme .hero .container {
+  position: relative;
+  display: block;
+  min-height: 680px;
+  padding-top: 28px;
+  padding-bottom: 34px;
+}
+body.home-theme .hero-media {
+  width: min(100%, 1080px);
+  min-height: 618px;
+  margin: 0 auto;
+}
+body.home-theme .sneaker-stage {
+  min-height: 618px;
+  overflow: visible;
+}
+body.home-theme .hero-carousel {
+  overflow: visible;
+}
+body.home-theme .hero-slide-backdrop-title {
+  z-index: 1;
+  width: auto;
+  max-width: none;
+  height: 112%;
+  padding: 0;
+  color: transparent;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  opacity: .92;
+  font-family: var(--font-en);
+  font-size: clamp(150px, 22vw, 320px);
+  font-weight: 900;
+  letter-spacing: -.06em;
+  line-height: .76;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  white-space: nowrap;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--site-color) 46%, #fff 54%);
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--site-color) 25%, transparent));
+  transform: translate3d(-50%,-50%,0) rotate(180deg);
+}
+body.home-theme .hero-slide-backdrop-title::before {
+  inset: -8% -34%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--site-color) 19%, transparent), transparent 68%);
+  filter: blur(24px);
+  opacity: .76;
+}
+body.home-theme .floating-sneaker {
+  width: min(92%, 760px) !important;
+  max-height: 560px !important;
+  padding: 0 !important;
+  filter: saturate(1.08) contrast(1.04) drop-shadow(0 16px 20px rgba(0,0,0,.28)) drop-shadow(0 0 28px color-mix(in srgb, var(--site-color) 62%, transparent)) !important;
+}
+body.home-theme .hero-copy {
+  position: absolute;
+  z-index: 7;
+  left: 0;
+  bottom: 48px;
+  width: auto;
+  order: initial;
+}
+body.home-theme .hero-cta { gap: 0; }
+body.home-theme .hero-cta .btn-primary {
+  padding: 13px 30px;
+  border: 1px solid rgba(255,255,255,.48);
+  border-radius: 5px;
+  color: #08090b;
+  box-shadow: 8px 8px 0 rgba(255,255,255,.12), 0 0 24px color-mix(in srgb, var(--site-color) 30%, transparent);
+}
+body.home-theme .hero-cta .btn-primary::after {
+  content: "↗";
+  margin-right: 12px;
+  font-family: var(--font-en);
+  font-size: 18px;
+  line-height: 0;
+}
+body.home-theme .hero-slide-copy {
+  right: 7%;
+  top: 8%;
+  max-width: 170px;
+  transform: rotate(-7deg) translateY(12px) scale(.97);
+}
+body.home-theme .hero-decor { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+body.home-theme .decor-line { position: absolute; display: block; width: 1px; height: 74px; background: color-mix(in srgb, var(--site-color) 62%, #fff 38%); opacity: .58; transform: rotate(28deg); }
+body.home-theme .decor-line-a { top: 14%; right: 14%; }
+body.home-theme .decor-line-b { bottom: 20%; left: 13%; transform: rotate(-42deg); height: 54px; }
+body.home-theme .decor-dot { position: absolute; width: 7px; height: 7px; border: 1px solid #fff; border-radius: 50%; background: var(--site-color); box-shadow: 0 0 14px var(--site-color); }
+body.home-theme .decor-dot-a { top: 22%; left: 18%; }
+body.home-theme .decor-dot-b { bottom: 18%; right: 22%; width: 5px; height: 5px; }
+body.home-theme .decor-card { position: absolute; display: flex; flex-direction: column; gap: 3px; min-width: 104px; padding: 9px 12px; border: 1px solid rgba(255,255,255,.38); color: rgba(255,255,255,.86); background: rgba(7,8,9,.2); font-family: var(--font-en); letter-spacing: 1.5px; transform: rotate(-8deg); }
+body.home-theme .decor-card b { font-size: 15px; color: var(--site-color); }
+body.home-theme .decor-card small { font-size: 8px; opacity: .68; }
+body.home-theme .decor-card-a { top: 17%; left: 8%; }
+body.home-theme .decor-card-b { bottom: 21%; right: 7%; transform: rotate(8deg); }
+body.home-theme .decor-shoe { position: absolute; z-index: 0; width: 120px; height: 90px; object-fit: contain; opacity: .18; filter: grayscale(1) contrast(1.2) drop-shadow(0 0 12px color-mix(in srgb, var(--site-color) 42%, transparent)); }
+body.home-theme .decor-shoe-a { top: 4%; left: 2%; transform: rotate(-18deg); }
+body.home-theme .decor-shoe-b { bottom: 4%; right: 1%; transform: rotate(16deg) scaleX(-1); }
+
+@media (max-width: 900px) {
+  body.home-theme .hero .container { min-height: 600px; }
+  body.home-theme .hero-media, body.home-theme .sneaker-stage { min-height: 540px; }
+  body.home-theme .hero-slide-backdrop-title { font-size: clamp(124px, 25vw, 220px); }
+  body.home-theme .floating-sneaker { max-height: 470px !important; }
+  body.home-theme .hero-copy { left: 50%; bottom: 22px; transform: translateX(-50%); }
+  body.home-theme .decor-card-a { left: 2%; }
+  body.home-theme .decor-card-b { right: 2%; }
+}
+@media (max-width: 640px) {
+  body.home-theme .hero .container { min-height: 500px; padding: 8px 16px 22px; }
+  body.home-theme .hero-media, body.home-theme .sneaker-stage { min-height: 455px; }
+  body.home-theme .hero-slide-backdrop-title { font-size: clamp(92px, 25vw, 150px); -webkit-text-stroke-width: .8px; }
+  body.home-theme .floating-sneaker { width: 108% !important; max-height: 360px !important; }
+  body.home-theme .hero-slide-copy { right: 3%; top: 7%; max-width: 128px; }
+  body.home-theme .hero-slide-copy strong { font-size: 18px; }
+  body.home-theme .hero-copy { bottom: 14px; }
+  body.home-theme .hero-cta .btn-primary { padding: 11px 22px; font-size: 13px; }
+  body.home-theme .decor-card { min-width: 78px; padding: 7px 8px; }
+  body.home-theme .decor-card b { font-size: 11px; }
+  body.home-theme .decor-card small { font-size: 6px; }
+  body.home-theme .decor-card-a { top: 13%; left: 0; }
+  body.home-theme .decor-card-b { bottom: 18%; right: 0; }
+  body.home-theme .decor-shoe { width: 82px; height: 64px; opacity: .13; }
+  body.home-theme .hero-carousel-controls { left: 50%; bottom: 0; transform: translateX(-50%); }
+}

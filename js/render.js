@@ -106,20 +106,8 @@ export function renderHome() {
     <section class="hero">
       <div class="container">
         <div class="hero-copy">
-          <span class="hero-eyebrow">
-            <span class="dot"></span>
-            موسم 2026 · الإصدار الجديد
-          </span>
-          <h1>أكثر من <span class="accent">حذاء</span>.<br>إنه أسلوب حياة.</h1>
-          <p>علامات أصلية واتجاهات رائجة. انتقينا أحذية مصمَّمة لحركتك اليومية، لتقدّم لك تجربة شراء مختلفة كليًا.</p>
           <div class="hero-cta">
             <a href="#/shop" class="btn btn-primary" data-action="go-link">تسوّق الآن</a>
-            <a href="#/shop?category=running" class="btn btn-outline" data-action="go-link">اكتشف أحذية الجري</a>
-          </div>
-          <div class="hero-stats">
-            <div><b>+45</b><span>علامة عالمية</span></div>
-            <div><b>+12k</b><span>عميل سعيد</span></div>
-            <div><b>★ 4.8</b><span>متوسط التقييم</span></div>
           </div>
         </div>
         <div class="hero-media">
@@ -133,11 +121,6 @@ export function renderHome() {
                 <a class="hero-slide ${index === 0 ? "active" : ""}" data-hero-slide="${index}" data-shoe-color="${hex}" href="#/product/${product.id}" data-action="go-product" aria-label="عرض ${escapeHtml(product.name)}">
                   <span class="hero-slide-backdrop-title" aria-hidden="true">${escapeHtml(product.name)}</span>
                   <img class="floating-sneaker" src="${product.images[0] || HERO_IMAGE}" alt="${escapeHtml(product.name)}">
-                  <span class="hero-slide-copy">
-                    <small>${escapeHtml(product.brand)} / ${escapeHtml(product.category)}</small>
-                    <strong>${escapeHtml(product.name)}</strong>
-                    <em>${formatPrice(product.price)}</em>
-                  </span>
                 </a>`;
               }).join("")}
             </div>
@@ -149,14 +132,16 @@ export function renderHome() {
               <button type="button" class="carousel-btn" data-action="hero-next" aria-label="السنيكرز التالي"><svg class="carousel-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12h12"/><path d="m13 6 6 6-6 6"/></svg></button>
             </div>
           </div>
-          ${onSale[0] ? `
-            <div class="hero-tag right">
-              <div class="row">
-                <span class="price-tag">${formatPrice(onSale[0].price)}</span>
-                ${onSale[0].oldPrice ? `<span class="strikethrough">${formatPrice(onSale[0].oldPrice)}</span>` : ""}
-              </div>
-              <small>${escapeHtml(onSale[0].name)}</small>
-            </div>` : ``}
+          <div class="hero-decor" aria-hidden="true">
+            <span class="decor-line decor-line-a"></span>
+            <span class="decor-line decor-line-b"></span>
+            <span class="decor-dot decor-dot-a"></span>
+            <span class="decor-dot decor-dot-b"></span>
+            <span class="decor-card decor-card-a"><b>${escapeHtml(heroProducts[1]?.brand || "KHALIL")}</b><small>STREET / 02</small></span>
+            <span class="decor-card decor-card-b"><b>01—03</b><small>SELECTED DROP</small></span>
+            ${heroProducts[1] ? `<img class="decor-shoe decor-shoe-a" src="${heroProducts[1].images[0]}" alt="">` : ""}
+            ${onSale[0] ? `<img class="decor-shoe decor-shoe-b" src="${onSale[0].images[0]}" alt="">` : ""}
+          </div>
         </div>
       </div>
     </section>
