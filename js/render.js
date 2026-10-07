@@ -211,7 +211,7 @@ export function renderHome() {
       <div class="container">
         <div class="promo-banner">
           <div>
-            <h2>خصم حتى <span class="gold">45%</span><br>على اختيارات مختارة</h2>
+            <h2>خصم حتى <span class="silver-accent">45%</span><br>على اختيارات مختارة</h2>
             <p>لفترة محدودة فقط — اغتنم أحذية الأداء والستايل لهذا الموسم قبل نفاد الكميات.</p>
             <a href="#/shop?sort=sale" class="btn btn-primary" data-action="go-link">تسوّق التخفيضات</a>
           </div>
@@ -741,7 +741,7 @@ export function renderAbout() {
   return `
     <section class="about-hero">
       <div class="container">
-        <h1>أكثر من مجرد <span class="gold">متجر</span></h1>
+        <h1>أكثر من مجرد <span class="silver-accent">متجر</span></h1>
         <p>khalil store ينتقي الأحذية التي تستحق أن ترتديها كل صباح — علامات أصلية، أسعار عادلة، وفريق يعرف ما يبيعه فعلًا.</p>
       </div>
     </section>

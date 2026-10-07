@@ -1,7 +1,7 @@
-# STRIDE — Premium Sneaker Store v2 (static front-end)
+# Khalil Store — Bold Streetwear Sneaker Storefront
 
 A complete, dependency-free sneaker/shoe e-commerce storefront in a
-warm editorial-meets-sport-tech style. Built as plain HTML/CSS/JS (ES
+bold monochrome streetwear style. Built as plain HTML/CSS/JS (ES
 modules) — no framework, no build step, no backend — so it is easy to
 open, read and hand off to any other AI model or developer.
 
@@ -16,17 +16,15 @@ favorites, checkout, order receipt, RTL Arabic copy, hash router,
 localStorage persistence) and improves two layers:
 
 ### 1. Visual identity (design system)
-Tokens were extracted from the four reference mockups the user
-provided:
 
-- **ATLETE TREND** → warm off-white background (`--paper: #FAFAF7`),
-  pure white product cards, pure black ink CTAs, gold star ratings.
-- **Nike luxury mockups** → editorial layered hero, deep black pill
-  CTAs, organic backdropped product photography.
-- **Streetwear 3D concept** → large `20–28px` card radii, pill chips,
-  dual CTA dock, sticky share bar in checkout.
-- **Learn up concept** → high-contrast monochrome hero, line-art
-  accents, premium serif-on-sans pairing.
+- **Monochrome palette** → black, white, cool gray and silver only;
+  former gold/red accents are now neutral graphite or silver.
+- **Streetwear typography** → heavy Arabic Cairo paired with compact,
+  athletic Barlow Condensed for Latin headings, prices and labels.
+- **Atmosphere** → soft, moving silver haze gradients in the hero,
+  restrained glass highlights, and high-contrast black CTAs.
+- **Storefront details** → large cards, pill controls, and a floating
+  bottom dock with a sliding silver light indicator.
 
 All tokens are defined as CSS variables on `:root` in `css/style.css`,
 so any future tweak is a one-line change.

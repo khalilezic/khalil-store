@@ -364,7 +364,7 @@ document.addEventListener("click", (e) => {
         showToast("يرجى اختيار المقاس أولًا");
         const sizeRow = document.querySelector(".size-grid");
         if (sizeRow) {
-          sizeRow.style.outline = "2px solid #D63E45";
+          sizeRow.style.outline = "2px solid #62676F";
           sizeRow.style.borderRadius = "10px";
           setTimeout(() => (sizeRow.style.outline = "none"), 900);
         }
