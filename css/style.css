@@ -354,7 +354,7 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
 .hero-stats div span { font-size: 12.5px; color: var(--muted); }
 
 .hero-media { order: 1; position: relative; isolation: isolate; }
-.hero-media::before { content: ""; position: absolute; z-index: 0; inset: 1% -4% 4%; border-radius: 48%; pointer-events: none; background: radial-gradient(ellipse at 30% 70%, rgba(137,144,155,.3), transparent 34%), radial-gradient(ellipse at 73% 27%, rgba(222,225,231,.82), transparent 44%), conic-gradient(from 215deg at 52% 49%, transparent 0 20%, rgba(171,178,188,.2) 31%, transparent 45%, rgba(90,96,106,.1) 59%, transparent 76%); filter: blur(30px); opacity: .78; transform: scale(1.06) rotate(-4deg); animation: silver-haze-wave 13s ease-in-out infinite alternate; }
+.hero-media::before { content: ""; position: absolute; z-index: 0; inset: 1% -4% 4%; border-radius: 48%; pointer-events: none; background: radial-gradient(ellipse at 30% 70%, rgba(137,144,155,.3), transparent 34%), radial-gradient(ellipse at 73% 27%, rgba(222,225,231,.82), transparent 44%), conic-gradient(from 215deg at 52% 49%, transparent 0 20%, rgba(171,178,188,.2) 31%, transparent 45%, rgba(90,96,106,.1) 59%, transparent 76%); filter: blur(30px); opacity: .48; transform: scale(1.06) rotate(-4deg); animation: silver-haze-wave 13s ease-in-out infinite alternate; }
 .hero-media .layer-back {
   position: absolute;
   inset: 26px -22px -22px 26px;
@@ -386,10 +386,14 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
 }
 .sneaker-stage { position: relative; z-index: 2; min-height: 430px; display: grid; place-items: center; overflow: hidden; border-radius: var(--radius-xl); background: transparent; box-shadow: none; }
 .hero-carousel { position: absolute; inset: 0; z-index: 2; }
-.hero-slide { --slide-x: 54px; position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; visibility: hidden; pointer-events: none; transform: translate3d(var(--slide-x), 12px, 0) scale(.94) rotate(1deg); filter: blur(8px); backface-visibility: hidden; will-change: opacity, transform, filter; transition: opacity .92s cubic-bezier(.22,1,.36,1), transform 1.08s cubic-bezier(.22,1,.36,1), filter .86s ease, visibility 0s linear 1.08s; }
+.hero-slide { --slide-x: 54px; position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; visibility: hidden; pointer-events: none; transform: translate3d(var(--slide-x), 12px, 0) scale(.94) rotate(1deg); backface-visibility: hidden; will-change: opacity, transform; transition: opacity .92s cubic-bezier(.22,1,.36,1), transform 1.08s cubic-bezier(.22,1,.36,1), visibility 0s linear 1.08s; }
+.hero-slide::before { content: ""; position: absolute; z-index: 1; inset: -6%; border-radius: 50%; pointer-events: none; background: radial-gradient(ellipse at var(--light-x, 50%) var(--light-y, 48%), rgba(255,255,255,.32) 0%, rgba(255,255,255,.12) 14%, transparent 42%), radial-gradient(ellipse at 50% 56%, rgba(var(--shoe-rgb, 187,193,202),.32) 0%, rgba(var(--shoe-rgb, 187,193,202),.16) 34%, transparent 72%); filter: blur(20px); opacity: 0; transform: scale(.94); will-change: opacity, transform; transition: opacity .82s ease, transform 1.08s cubic-bezier(.22,1,.36,1); }
 .hero-carousel[data-direction="backward"] .hero-slide { --slide-x: -54px; }
-.hero-slide.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translate3d(0, 0, 0) scale(1) rotate(0); filter: blur(0); transition-delay: 0s; }
-.floating-sneaker { position: relative !important; z-index: 2 !important; width: 92% !important; max-height: 430px !important; padding: 28px !important; background: transparent !important; border-radius: 0 !important; box-shadow: none !important; mix-blend-mode: normal; filter: drop-shadow(0 25px 16px rgba(17,18,22,.18)) saturate(1.12) contrast(1.04) !important; animation: sneakerFloat 4.8s ease-in-out infinite; transform-origin: 50% 55%; }
+.hero-slide.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translate3d(0, 0, 0) scale(1) rotate(0); transition-delay: 0s; }
+.hero-slide.active::before { opacity: .94; transform: scale(1.06); }
+.floating-sneaker { position: relative !important; z-index: 2 !important; width: 92% !important; max-height: 430px !important; padding: 28px !important; background: transparent !important; border-radius: 0 !important; box-shadow: none !important; mix-blend-mode: normal; filter: drop-shadow(0 25px 16px rgba(17,18,22,.18)) saturate(1.12) contrast(1.04) !important; animation: sneakerFloat 4.8s ease-in-out infinite; transform-origin: 50% 55%; will-change: transform; }
+.shoe-spotlight { position: absolute; z-index: 3; top: 0; left: 0; width: clamp(140px, 36%, 230px); aspect-ratio: 1; border-radius: 50%; pointer-events: none; opacity: 0; transform: translate3d(50%, 50%, 0) translate(-50%, -50%); background: radial-gradient(circle, rgba(255,255,255,.68) 0%, rgba(255,255,255,.42) 9%, rgba(255,255,255,.2) 24%, rgba(255,255,255,.055) 48%, transparent 68%); mix-blend-mode: screen; filter: blur(2px) drop-shadow(0 0 32px rgba(255,255,255,.56)); transition: transform .96s cubic-bezier(.22,1,.36,1), opacity .42s ease; will-change: transform, opacity; }
+.sneaker-stage.is-lit .shoe-spotlight { opacity: .96; }
 .sneaker-glow { position: absolute; width: 58%; height: 16%; bottom: 17%; left: 21%; border-radius: 50%; background: rgba(17,18,22,.20); filter: blur(18px); animation: sneakerShadow 4.8s ease-in-out infinite; }
 .hero-orbit { position: absolute; z-index: 1; border: 1px solid rgba(183,190,200,.62); border-radius: 50%; pointer-events: none; }
 .orbit-one { width: 72%; height: 72%; left: 14%; top: 14%; transform: rotate(-22deg) skewX(-12deg); }
@@ -1485,8 +1489,10 @@ h1, h2, h3, h4 { font-weight: 900; letter-spacing: -.025em; }
 @media (prefers-reduced-motion: reduce) {
   .hero-media::before,
   .hero-slide,
+  .hero-slide::before,
   .hero-slide-copy,
   .floating-sneaker,
+  .shoe-spotlight,
   .sneaker-glow,
   .carousel-dot,
   .bottom-nav,

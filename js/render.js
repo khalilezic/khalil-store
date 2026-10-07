@@ -99,6 +99,7 @@ export function renderHome() {
   const newArrivals = PRODUCTS.filter((p) => p.tags.includes("new")).slice(0, 4);
   const onSale      = PRODUCTS.filter((p) => p.tags.includes("sale")).slice(0, 2);
   const heroProducts = ["p4", "p8", "p7"].map((id) => getProductById(id)).filter(Boolean);
+  const heroLightPositions = { p4: [55, 46], p8: [47, 49], p7: [52, 51] };
 
   return `
     <!-- HERO --------------------------------------------------------- -->
@@ -129,15 +130,22 @@ export function renderHome() {
           <div class="sneaker-stage">
             <span class="sneaker-glow"></span>
             <div class="hero-carousel" aria-live="polite">
-              ${heroProducts.map((product, index) => `
-                <a class="hero-slide ${index === 0 ? "active" : ""}" data-hero-slide="${index}" href="#/product/${product.id}" data-action="go-product" aria-label="عرض ${escapeHtml(product.name)}">
+              ${heroProducts.map((product, index) => {
+                const hex = product.colors?.[0]?.hex || "#BBC1CA";
+                const match = hex.match(/^#([a-f\d]{6})$/i);
+                const shoeRgb = match ? [0, 2, 4].map((offset) => parseInt(match[1].slice(offset, offset + 2), 16)).join(", ") : "187, 193, 202";
+                const [lightX, lightY] = heroLightPositions[product.id] || [50, 50];
+                return `
+                <a class="hero-slide ${index === 0 ? "active" : ""}" data-hero-slide="${index}" data-light-x="${lightX}" data-light-y="${lightY}" style="--shoe-rgb: ${shoeRgb}; --light-x: ${lightX}%; --light-y: ${lightY}%;" href="#/product/${product.id}" data-action="go-product" aria-label="عرض ${escapeHtml(product.name)}">
                   <img class="floating-sneaker" src="${product.images[0] || HERO_IMAGE}" alt="${escapeHtml(product.name)}">
                   <span class="hero-slide-copy">
                     <small>${escapeHtml(product.brand)} / ${escapeHtml(product.category)}</small>
                     <strong>${escapeHtml(product.name)}</strong>
                     <em>${formatPrice(product.price)}</em>
                   </span>
-                </a>`).join("")}
+                </a>`;
+              }).join("")}
+              <span class="shoe-spotlight" aria-hidden="true"></span>
             </div>
             <div class="hero-carousel-controls" aria-label="التحكم بعروض السنيكرز">
               <button type="button" class="carousel-btn" data-action="hero-prev" aria-label="السنيكرز السابق">‹</button>

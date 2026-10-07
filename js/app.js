@@ -31,6 +31,7 @@ const app = document.getElementById("app");
 let shopFilters = { category: "", brand: "", sort: "featured", q: "", priceMax: 200 };
 let heroTimer = null;
 let heroIndex = 0;
+let heroLightObserver = null;
 
 const filtersToQueryString = () => buildQuery(shopFilters);
 
@@ -109,6 +110,25 @@ function closeMobileMenu() {
   if (nav) nav.hidden = true;
 }
 
+function moveHeroSpotlight(slide, immediate = false) {
+  const stage = document.querySelector(".sneaker-stage");
+  const light = document.querySelector(".shoe-spotlight");
+  if (!stage || !light || !slide) return;
+  const rect = stage.getBoundingClientRect();
+  const x = rect.width * (Number(slide.dataset.lightX) || 50) / 100;
+  const y = rect.height * (Number(slide.dataset.lightY) || 50) / 100;
+  const transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+  if (immediate) {
+    light.style.transition = "none";
+    light.style.transform = transform;
+    void light.offsetWidth;
+    light.style.removeProperty("transition");
+  } else {
+    light.style.transform = transform;
+  }
+  stage.classList.add("is-lit");
+}
+
 function setHeroSlide(nextIndex) {
   const slides = [...document.querySelectorAll("[data-hero-slide]")];
   const dots = [...document.querySelectorAll(".carousel-dot")];
@@ -131,6 +151,7 @@ function setHeroSlide(nextIndex) {
   heroIndex = next;
   slides.forEach((slide, index) => slide.classList.toggle("active", index === heroIndex));
   dots.forEach((dot, index) => dot.classList.toggle("active", index === heroIndex));
+  moveHeroSpotlight(slides[heroIndex]);
 }
 
 function startHeroCarousel() {
@@ -140,6 +161,15 @@ function startHeroCarousel() {
   heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), 5200);
   const stage = document.querySelector(".sneaker-stage");
   if (!stage) return;
+  heroLightObserver?.disconnect();
+  const firstSlide = stage.querySelector(`[data-hero-slide="${heroIndex}"]`);
+  moveHeroSpotlight(firstSlide, true);
+  if ("ResizeObserver" in window) {
+    heroLightObserver = new ResizeObserver(() => {
+      moveHeroSpotlight(stage.querySelector(`[data-hero-slide="${heroIndex}"]`), true);
+    });
+    heroLightObserver.observe(stage);
+  }
   stage.addEventListener("mouseenter", () => clearInterval(heroTimer));
   stage.addEventListener("mouseleave", () => {
     clearInterval(heroTimer);
