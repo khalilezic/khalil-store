@@ -1779,3 +1779,141 @@ body.site-theme .carousel-btn:hover { background: color-mix(in srgb, var(--site-
 body.site-theme .icon-btn .badge { background: var(--site-color); color: #08090B; box-shadow: 0 0 0 2px var(--paper); }
 body.site-theme .pay-chip.active { background: color-mix(in srgb, var(--site-color) 16%, #101216 84%); border-color: var(--site-color); }
 body.site-theme .tab-btn.active { color: var(--silver); border-bottom-color: var(--site-color); }
+
+/* ============================================================
+   SAFE LIGHT INTERIOR THEME
+   الصفحة الرئيسية تبقى داكنة؛ الصفحات الداخلية تستخدم ألوانًا صريحة
+   لضمان وضوح النصوص وحقول البحث والفرز في كل المتصفحات.
+   ============================================================ */
+body.site-theme:not(.home-theme) {
+  --ink: #17212b;
+  --ink-soft: #2c3d4a;
+  --paper: #f7fbfd;
+  --paper-2: #edf5f8;
+  --card: #ffffff;
+  --line: #d8e4ea;
+  --line-soft: #e8eff3;
+  --muted: #637581;
+  --muted-2: #8b9ba5;
+  --silver: var(--site-color);
+  --graphite: #42606f;
+  color: var(--ink);
+  color-scheme: light;
+  background: #f7fbfd;
+  background-image: radial-gradient(circle at var(--ambient-x) var(--ambient-y), color-mix(in srgb, var(--site-color) 8%, transparent), transparent 34%), linear-gradient(145deg, #fbfdfe, #f1f7fa);
+  transition: background .8s ease, color .4s ease;
+}
+/* لا نضع طبقة ثابتة فوق المحتوى؛ الحركة تكون في خلفية body فقط */
+body.site-theme:not(.home-theme)::before,
+body.site-theme:not(.home-theme)::after { display: none; }
+body.site-theme:not(.home-theme) .site-header {
+  background: rgba(255,255,255,.94);
+  border-bottom-color: var(--line);
+}
+body.site-theme:not(.home-theme) .site-header .brand,
+body.site-theme:not(.home-theme) .site-header .main-nav a { color: var(--ink); }
+body.site-theme:not(.home-theme) .site-header .icon-btn,
+body.site-theme:not(.home-theme) .header-search {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--line);
+}
+body.site-theme:not(.home-theme) .section,
+body.site-theme:not(.home-theme) .brand-strip {
+  color: var(--ink);
+  background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(242,248,250,.94));
+  border-color: var(--line);
+}
+body.site-theme:not(.home-theme) .section-head h2,
+body.site-theme:not(.home-theme) .section-head .see-all,
+body.site-theme:not(.home-theme) .section-head p.sub { color: var(--ink); }
+body.site-theme:not(.home-theme) .product-card,
+body.site-theme:not(.home-theme) .cat-card,
+body.site-theme:not(.home-theme) .shop-layout aside,
+body.site-theme:not(.home-theme) .summary-card,
+body.site-theme:not(.home-theme) .form-grid,
+body.site-theme:not(.home-theme) .contact-card,
+body.site-theme:not(.home-theme) .perk-card {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--line);
+  box-shadow: 0 8px 24px rgba(42,75,92,.07);
+}
+body.site-theme:not(.home-theme) .product-media,
+body.site-theme:not(.home-theme) .cart-item .thumb,
+body.site-theme:not(.home-theme) .pdp-gallery-main,
+body.site-theme:not(.home-theme) .perk-card .ic { background: var(--paper-2); }
+body.site-theme:not(.home-theme) .product-card h3,
+body.site-theme:not(.home-theme) .product-card .brand-tag,
+body.site-theme:not(.home-theme) .cart-page h1,
+body.site-theme:not(.home-theme) .fav-page h1,
+body.site-theme:not(.home-theme) .checkout-page h1,
+body.site-theme:not(.home-theme) .shop-head h1,
+body.site-theme:not(.home-theme) .shop-head p,
+body.site-theme:not(.home-theme) .filter-group label,
+body.site-theme:not(.home-theme) .filter-group h4 { color: var(--ink); }
+body.site-theme:not(.home-theme) .filter-group h4,
+body.site-theme:not(.home-theme) .shop-head p,
+body.site-theme:not(.home-theme) .cart-item .meta,
+body.site-theme:not(.home-theme) .summary-row,
+body.site-theme:not(.home-theme) .empty-state { color: var(--muted); }
+body.site-theme:not(.home-theme) .chip,
+body.site-theme:not(.home-theme) .shop-layout select,
+body.site-theme:not(.home-theme) .size-pill,
+body.site-theme:not(.home-theme) .qty-control,
+body.site-theme:not(.home-theme) .promo-input input,
+body.site-theme:not(.home-theme) .field input,
+body.site-theme:not(.home-theme) .field select,
+body.site-theme:not(.home-theme) .field textarea,
+body.site-theme:not(.home-theme) .pay-chip {
+  background: #fff !important;
+  color: var(--ink) !important;
+  border-color: var(--line);
+}
+body.site-theme:not(.home-theme) .chip.active,
+body.site-theme:not(.home-theme) .size-pill.active,
+body.site-theme:not(.home-theme) .pay-chip.active {
+  background: color-mix(in srgb, var(--site-color) 20%, #fff 80%) !important;
+  color: var(--ink) !important;
+  border-color: var(--site-color);
+}
+body.site-theme:not(.home-theme) .shop-layout select option,
+body.site-theme:not(.home-theme) .field select option { background: #fff; color: var(--ink); }
+body.site-theme:not(.home-theme) .promo-banner,
+body.site-theme:not(.home-theme) .about-hero {
+  color: var(--ink);
+  background: linear-gradient(135deg, #fff, color-mix(in srgb, var(--site-color) 10%, #f1f8fb 90%));
+  border: 1px solid var(--line);
+}
+body.site-theme:not(.home-theme) .about-hero h1,
+body.site-theme:not(.home-theme) .about-hero p,
+body.site-theme:not(.home-theme) .promo-banner p { color: var(--ink); }
+body.site-theme:not(.home-theme) .site-footer {
+  color: var(--ink);
+  background: #eef7fa;
+  border-top: 1px solid var(--line);
+}
+body.site-theme:not(.home-theme) .site-footer h4,
+body.site-theme:not(.home-theme) .site-footer a,
+body.site-theme:not(.home-theme) .site-footer p { color: var(--ink); }
+body.site-theme:not(.home-theme) .icon-btn svg,
+body.site-theme:not(.home-theme) .category-icon svg,
+body.site-theme:not(.home-theme) .bottom-nav svg { stroke-linecap: round; stroke-linejoin: round; transition: transform .3s ease, color .3s ease; }
+body.site-theme:not(.home-theme) .icon-btn:hover svg { transform: translateY(-2px) rotate(-8deg) scale(1.08); }
+body.site-theme:not(.home-theme) .category-icon { transition: transform .35s ease, background .35s ease; }
+body.site-theme:not(.home-theme) .cat-card:hover .category-icon { background: color-mix(in srgb, var(--site-color) 28%, #fff 72%); transform: translateY(-3px) rotate(-5deg); }
+body.site-theme:not(.home-theme) .carousel-btn { background: var(--site-color); color: #17212b; }
+body.site-theme:not(.home-theme) .carousel-btn:hover { background: #fff; color: var(--ink); }
+body.site-theme:not(.home-theme) .fav-toggle { background: #fff; color: var(--ink); border-color: var(--line); }
+body.site-theme:not(.home-theme) .fav-toggle:hover { background: var(--site-color); color: var(--ink); }
+
+/* Motion accents: decorative only, never applied to text or form controls. */
+.carousel-btn { display: inline-flex; align-items: center; justify-content: center; font-size: 0; }
+.carousel-btn::before { display: none; }
+.carousel-btn svg { width: 18px; height: 18px; flex: none; transition: transform .25s ease; }
+.carousel-btn:hover svg { transform: scale(1.12); }
+.hero-slide { transition: opacity .72s cubic-bezier(.22,1,.36,1), transform .84s cubic-bezier(.22,1,.36,1), visibility 0s linear .84s; }
+.hero-carousel { touch-action: pan-y; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide, .carousel-btn svg, .icon-btn svg, .category-icon { transition-duration: .01ms !important; }
+}
