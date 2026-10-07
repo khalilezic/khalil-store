@@ -2677,3 +2677,49 @@ html.low-performance body.home-theme .hero-carousel-controls { -webkit-backdrop-
   body.home-theme .hero-slide-backdrop-title { filter: none; }
   body.home-theme .decor-shoe { opacity: .1; }
 }
+
+/* Lightweight sneaker halo: animated opacity/scale keeps the glow smooth on weak devices. */
+body.home-theme .hero-slide::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  width: 56%;
+  height: 38%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center,
+    color-mix(in srgb, var(--site-color) 76%, #fff 24%) 0%,
+    color-mix(in srgb, var(--site-color) 48%, transparent) 34%,
+    transparent 72%);
+  opacity: .38;
+  transform: translate(-50%, -40%) scale(.78);
+  animation: sneaker-halo-pulse 4.6s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+@keyframes sneaker-halo-pulse {
+  0%, 100% { opacity: .28; transform: translate(-50%, -40%) scale(.76); }
+  50% { opacity: .62; transform: translate(-50%, -40%) scale(1.05); }
+}
+body.home-theme .floating-sneaker {
+  filter: saturate(1.12) contrast(1.05)
+    drop-shadow(0 14px 18px rgba(0,0,0,.3))
+    drop-shadow(0 0 12px rgba(255,255,255,.42))
+    drop-shadow(0 0 30px color-mix(in srgb, var(--site-color) 72%, transparent)) !important;
+}
+html.low-performance body.home-theme .hero-slide::before {
+  animation-duration: 8s;
+  opacity: .28;
+}
+html.low-performance body.home-theme .floating-sneaker {
+  filter: saturate(1.06) contrast(1.03)
+    drop-shadow(0 10px 14px rgba(0,0,0,.26))
+    drop-shadow(0 0 20px color-mix(in srgb, var(--site-color) 56%, transparent)) !important;
+}
+@media (max-width: 700px) {
+  body.home-theme .hero-slide::before { width: 68%; height: 34%; opacity: .34; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.home-theme .hero-slide::before { animation: none !important; opacity: .42; }
+}
