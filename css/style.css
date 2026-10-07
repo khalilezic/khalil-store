@@ -2168,3 +2168,72 @@ body.home-theme .bottom-nav .nav-indicator::before {
 }
 .bottom-nav::after { z-index: 0; }
 .bottom-nav > ul { position: relative; z-index: 1; }
+
+/* High-contrast final treatment: obvious arrow icons + black mobile dock */
+.hero .carousel-btn,
+body.home-theme .carousel-btn {
+  width: 44px;
+  height: 44px;
+  background: #fff !important;
+  color: #07090b !important;
+  border: 2px solid rgba(255,255,255,.95);
+  box-shadow: 0 0 0 4px rgba(255,255,255,.08), 0 0 18px rgba(255,255,255,.32), 0 8px 18px rgba(0,0,0,.28);
+}
+.hero .carousel-btn:hover,
+body.home-theme .carousel-btn:hover {
+  background: #fff !important;
+  color: #07090b !important;
+  box-shadow: 0 0 0 5px rgba(255,255,255,.12), 0 0 26px rgba(255,255,255,.68), 0 10px 22px rgba(0,0,0,.3);
+}
+.hero .carousel-arrow-icon,
+body.home-theme .carousel-arrow-icon { width: 23px !important; height: 23px !important; stroke: #07090b !important; stroke-width: 2.7 !important; }
+.hero .carousel-btn:active { transform: scale(.88); }
+
+/* The bottom navigation is intentionally black and independent of slide colors. */
+@media (max-width: 640px) {
+  .bottom-nav,
+  body.site-theme .bottom-nav,
+  body.home-theme .bottom-nav {
+    background: #07090b !important;
+    border-color: rgba(255,255,255,.16) !important;
+    box-shadow: 0 -10px 30px rgba(0,0,0,.34), 0 0 26px rgba(255,255,255,.08);
+  }
+  .bottom-nav a,
+  body.site-theme .bottom-nav a,
+  body.home-theme .bottom-nav a,
+  .bottom-nav a.active,
+  body.site-theme .bottom-nav a.active,
+  body.home-theme .bottom-nav a.active,
+  .bottom-nav a svg,
+  body.site-theme .bottom-nav a svg,
+  body.home-theme .bottom-nav a svg {
+    color: rgba(255,255,255,.82) !important;
+    stroke: rgba(255,255,255,.82) !important;
+  }
+  .bottom-nav a.active,
+  body.site-theme .bottom-nav a.active,
+  body.home-theme .bottom-nav a.active,
+  .bottom-nav a.active svg,
+  body.site-theme .bottom-nav a.active svg,
+  body.home-theme .bottom-nav a.active svg {
+    color: #07090b !important;
+    stroke: #07090b !important;
+  }
+  .bottom-nav .nav-indicator,
+  body.site-theme .bottom-nav .nav-indicator,
+  body.home-theme .bottom-nav .nav-indicator {
+    background: #fff !important;
+    border-color: rgba(255,255,255,.95) !important;
+    filter: drop-shadow(0 0 6px rgba(255,255,255,.95)) drop-shadow(0 0 18px rgba(255,255,255,.66)) drop-shadow(0 0 34px rgba(255,255,255,.32)) !important;
+  }
+  .bottom-nav .nav-indicator::before,
+  body.site-theme .bottom-nav .nav-indicator::before,
+  body.home-theme .bottom-nav .nav-indicator::before {
+    background: #07090b !important;
+    box-shadow: 0 0 6px rgba(255,255,255,.95), 0 0 18px rgba(255,255,255,.78), 0 0 32px rgba(255,255,255,.44) !important;
+  }
+  .bottom-nav::after { background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent); opacity: .5; }
+  .bottom-nav .nav-badge,
+  body.site-theme .bottom-nav .nav-badge,
+  body.home-theme .bottom-nav .nav-badge { background: #fff !important; color: #07090b !important; border-color: #07090b !important; }
+}
