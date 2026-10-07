@@ -1360,7 +1360,40 @@ h1, h2, h3, h4, p { margin: 0; }
   padding: 6px;
   box-shadow: 0 16px 34px rgba(15,16,20,.24), 0 3px 8px rgba(15,16,20,.12);
 }
-.bottom-nav ul { display: flex; justify-content: space-around; align-items: center; gap: 3px; }
+.bottom-nav ul { position: relative; display: flex; justify-content: space-around; align-items: center; gap: 3px; }
+.bottom-nav li { position: relative; z-index: 1; }
+.bottom-nav .nav-indicator {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0;
+  overflow: hidden;
+  clip-path: polygon(21% 0, 79% 0, 100% 100%, 0 100%);
+  background: linear-gradient(180deg, rgba(255,255,255,.36) 0%, rgba(255,255,255,.16) 52%, rgba(255,255,255,.04) 100%);
+  filter: drop-shadow(0 7px 11px rgba(255,255,255,.2));
+  will-change: transform, width;
+}
+.bottom-nav[data-ready="true"] .nav-indicator {
+  transition: transform .58s cubic-bezier(.22,1,.36,1), width .58s cubic-bezier(.22,1,.36,1), height .42s ease, opacity .22s ease;
+}
+.bottom-nav.has-active .nav-indicator { opacity: 1; }
+.bottom-nav .nav-indicator::after {
+  content: "";
+  position: absolute;
+  inset: -24% auto -24% -45%;
+  width: 32%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.74), transparent);
+  opacity: 0;
+  transform: skewX(-18deg);
+}
+.bottom-nav .nav-indicator.is-sweeping::after { animation: nav-light-sweep .72s ease-out both; }
+@keyframes nav-light-sweep {
+  0% { opacity: 0; transform: translateX(0) skewX(-18deg); }
+  18% { opacity: .9; }
+  100% { opacity: 0; transform: translateX(470%) skewX(-18deg); }
+}
 .bottom-nav a {
   isolation: isolate;
   width: 62px;
@@ -1375,63 +1408,29 @@ h1, h2, h3, h4, p { margin: 0; }
   font-weight: 600;
   position: relative;
   border-radius: 18px;
-  transition: color .28s ease, transform .28s cubic-bezier(.2,.8,.2,1);
-}
-.bottom-nav a::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 0 7px;
-  border-radius: 3px 3px 14px 14px;
-  background: linear-gradient(180deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.19) 54%, rgba(255,255,255,.06) 100%);
-  clip-path: polygon(21% 0, 79% 0, 100% 100%, 0 100%);
-  filter: drop-shadow(0 8px 9px rgba(255,255,255,.12));
-  opacity: 0;
-  transform: scaleX(.62) translateY(5px);
-  transition: opacity .25s ease, transform .32s cubic-bezier(.2,.8,.2,1);
-}
-.bottom-nav a::after {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  top: 1px;
-  left: 50%;
-  width: 32px;
-  height: 5px;
-  border-radius: 0 0 6px 6px;
-  background: #fff;
-  box-shadow: 0 1px 5px rgba(255,255,255,.55);
-  opacity: 0;
-  transform: translateX(-50%) scaleX(.45);
-  transition: opacity .2s ease, transform .3s cubic-bezier(.2,.8,.2,1);
+  transition: color .4s ease, transform .48s cubic-bezier(.22,1,.36,1);
 }
 .bottom-nav a svg {
   position: relative;
   z-index: 2;
   width: 22px;
   height: 22px;
-  transition: transform .28s cubic-bezier(.2,.8,.2,1), color .2s ease, stroke-width .2s ease;
+  transition: transform .48s cubic-bezier(.22,1,.36,1), color .32s ease, stroke-width .32s ease;
 }
 .bottom-nav a.active {
   color: rgba(255,255,255,.96);
   transform: translateY(-1px);
 }
-.bottom-nav a.active::before,
-.bottom-nav a.active::after {
-  opacity: 1;
-  transform: scaleX(1);
-}
-.bottom-nav a.active::after { transform: translateX(-50%) scaleX(1); }
 .bottom-nav a.active svg {
   color: #fff;
-  transform: translateY(1px) scale(1.08);
+  transform: translateY(1px) scale(1.05);
   stroke-width: 2.4;
-  animation: nav-icon-pop .38s cubic-bezier(.2,.8,.2,1) both;
+  animation: nav-icon-arrive .48s cubic-bezier(.22,1,.36,1) both;
 }
-@keyframes nav-icon-pop {
-  0% { transform: translateY(5px) scale(.72); }
-  65% { transform: translateY(-1px) scale(1.14); }
-  100% { transform: translateY(1px) scale(1.08); }
+@keyframes nav-icon-arrive {
+  0% { transform: translateY(3px) scale(.94); }
+  62% { transform: translateY(-1px) scale(1.08); }
+  100% { transform: translateY(1px) scale(1.05); }
 }
 .bottom-nav .nav-badge {
   position: absolute;
@@ -1453,8 +1452,8 @@ h1, h2, h3, h4, p { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   .bottom-nav,
   .bottom-nav a,
-  .bottom-nav a::before,
-  .bottom-nav a::after,
+  .bottom-nav .nav-indicator,
+  .bottom-nav .nav-indicator::after,
   .bottom-nav a svg { transition: none; animation: none; }
 }
 

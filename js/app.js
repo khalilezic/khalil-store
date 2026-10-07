@@ -71,9 +71,37 @@ function navKeyForPath(path) {
 }
 function updateActiveNav(path) {
   const key = navKeyForPath(path);
-  document.querySelectorAll("[data-route]").forEach((el) => {
+  const nav = document.querySelector(".bottom-nav");
+  const links = [...document.querySelectorAll(".bottom-nav [data-route]")];
+  links.forEach((el) => {
     el.classList.toggle("active", key !== null && el.dataset.route === key);
   });
+  if (!nav) return;
+
+  const indicator = nav.querySelector(".nav-indicator");
+  const target = links.find((el) => key !== null && el.dataset.route === key);
+  nav.classList.toggle("has-active", Boolean(target));
+  if (!target || !indicator) return;
+
+  const navList = nav.querySelector("ul");
+  const targetRect = target.getBoundingClientRect();
+  const listRect = navList.getBoundingClientRect();
+  const changed = nav.dataset.activeRoute && nav.dataset.activeRoute !== key;
+  indicator.style.width = `${targetRect.width}px`;
+  indicator.style.height = `${targetRect.height}px`;
+  indicator.style.transform = `translate3d(${targetRect.left - listRect.left}px, ${targetRect.top - listRect.top}px, 0)`;
+
+  if (nav.dataset.ready === "true" && changed) {
+    indicator.classList.remove("is-sweeping");
+    void indicator.offsetWidth;
+    indicator.classList.add("is-sweeping");
+  }
+  nav.dataset.activeRoute = key;
+  if (nav.dataset.ready !== "true") {
+    requestAnimationFrame(() => {
+      nav.dataset.ready = "true";
+    });
+  }
 }
 
 function closeMobileMenu() {
