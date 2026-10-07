@@ -1371,27 +1371,52 @@ h1, h2, h3, h4, p { margin: 0; }
   opacity: 0;
   overflow: hidden;
   clip-path: polygon(21% 0, 79% 0, 100% 100%, 0 100%);
-  background: linear-gradient(180deg, rgba(255,255,255,.36) 0%, rgba(255,255,255,.16) 52%, rgba(255,255,255,.04) 100%);
-  filter: drop-shadow(0 7px 11px rgba(255,255,255,.2));
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.3), transparent 58%), linear-gradient(180deg, rgba(255,255,255,.4) 0%, rgba(255,255,255,.18) 52%, rgba(255,255,255,.05) 100%);
+  filter: drop-shadow(0 7px 12px rgba(255,255,255,.26)) drop-shadow(0 0 12px rgba(232,216,174,.22));
   will-change: transform, width;
 }
 .bottom-nav[data-ready="true"] .nav-indicator {
   transition: transform .58s cubic-bezier(.22,1,.36,1), width .58s cubic-bezier(.22,1,.36,1), height .42s ease, opacity .22s ease;
 }
 .bottom-nav.has-active .nav-indicator { opacity: 1; }
+.bottom-nav .nav-indicator::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 1px;
+  left: 50%;
+  width: 32px;
+  height: 5px;
+  border-radius: 0 0 7px 7px;
+  background: #fff;
+  box-shadow: 0 1px 5px rgba(255,255,255,.95), 0 0 14px rgba(255,255,255,.88), 0 0 28px rgba(232,216,174,.68);
+  opacity: .96;
+  transform: translateX(-50%);
+  transition: opacity .25s ease, box-shadow .3s ease;
+}
+.bottom-nav .nav-indicator.is-sweeping::before {
+  animation: nav-lamp-pulse .72s ease-out both;
+}
+@keyframes nav-lamp-pulse {
+  0% { opacity: .72; box-shadow: 0 0 4px rgba(255,255,255,.65), 0 0 9px rgba(255,255,255,.5), 0 0 16px rgba(232,216,174,.35); }
+  38% { opacity: 1; box-shadow: 0 0 8px #fff, 0 0 22px rgba(255,255,255,.98), 0 0 38px rgba(232,216,174,.88); }
+  100% { opacity: .96; box-shadow: 0 1px 5px rgba(255,255,255,.95), 0 0 14px rgba(255,255,255,.88), 0 0 28px rgba(232,216,174,.68); }
+}
 .bottom-nav .nav-indicator::after {
   content: "";
   position: absolute;
-  inset: -24% auto -24% -45%;
-  width: 32%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.74), transparent);
+  inset: -28% auto -28% -45%;
+  width: 42%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.2) 24%, rgba(255,255,255,.98) 50%, rgba(255,248,222,.56) 62%, transparent);
+  filter: blur(1px);
+  box-shadow: 0 0 13px rgba(255,255,255,.7);
   opacity: 0;
   transform: skewX(-18deg);
 }
 .bottom-nav .nav-indicator.is-sweeping::after { animation: nav-light-sweep .72s ease-out both; }
 @keyframes nav-light-sweep {
   0% { opacity: 0; transform: translateX(0) skewX(-18deg); }
-  18% { opacity: .9; }
+  18% { opacity: 1; }
   100% { opacity: 0; transform: translateX(470%) skewX(-18deg); }
 }
 .bottom-nav a {
@@ -1453,6 +1478,7 @@ h1, h2, h3, h4, p { margin: 0; }
   .bottom-nav,
   .bottom-nav a,
   .bottom-nav .nav-indicator,
+  .bottom-nav .nav-indicator::before,
   .bottom-nav .nav-indicator::after,
   .bottom-nav a svg { transition: none; animation: none; }
 }
