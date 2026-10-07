@@ -99,11 +99,7 @@ export function renderHome() {
   const newArrivals = PRODUCTS.filter((p) => p.tags.includes("new")).slice(0, 4);
   const onSale      = PRODUCTS.filter((p) => p.tags.includes("sale")).slice(0, 2);
   const heroProducts = ["p4", "p8", "p7"].map((id) => getProductById(id)).filter(Boolean);
-  const heroLighting = {
-    p4: { tone: "#118E97", light: [43, 46], shadow: [22, 12] },
-    p8: { tone: "#CE2633", light: [61, 45], shadow: [-22, 12] },
-    p7: { tone: "#F08224", light: [50, 51], shadow: [-18, 10] }
-  };
+  const heroColors = { p4: "#118E97", p8: "#CE2633", p7: "#F08224" };
 
   return `
     <!-- HERO --------------------------------------------------------- -->
@@ -129,20 +125,12 @@ export function renderHome() {
         <div class="hero-media">
           <div class="layer-back"></div>
           <div class="layer-mid"></div>
-          <div class="hero-orbit orbit-one"></div>
-          <div class="hero-orbit orbit-two"></div>
           <div class="sneaker-stage">
-            <span class="sneaker-shadow-track" aria-hidden="true"><span class="sneaker-glow"></span></span>
             <div class="hero-carousel" aria-live="polite">
               ${heroProducts.map((product, index) => {
-                const lighting = heroLighting[product.id] || {};
-                const hex = lighting.tone || product.colors?.[0]?.hex || "#BBC1CA";
-                const match = hex.match(/^#([a-f\d]{6})$/i);
-                const shoeRgb = match ? [0, 2, 4].map((offset) => parseInt(match[1].slice(offset, offset + 2), 16)).join(", ") : "187, 193, 202";
-                const [lightX, lightY] = lighting.light || [50, 50];
-                const [shadowX, shadowY] = lighting.shadow || [0, 18];
+                const hex = heroColors[product.id] || product.colors?.[0]?.hex || "#BBC1CA";
                 return `
-                <a class="hero-slide ${index === 0 ? "active" : ""}" data-hero-slide="${index}" data-shoe-color="${hex}" data-light-x="${lightX}" data-light-y="${lightY}" data-shadow-x="${shadowX}" data-shadow-y="${shadowY}" style="--shoe-rgb: ${shoeRgb}; --light-x: ${lightX}%; --light-y: ${lightY}%; --shade-x: ${shadowX}px; --shade-y: ${shadowY}px;" href="#/product/${product.id}" data-action="go-product" aria-label="عرض ${escapeHtml(product.name)}">
+                <a class="hero-slide ${index === 0 ? "active" : ""}" data-hero-slide="${index}" data-shoe-color="${hex}" href="#/product/${product.id}" data-action="go-product" aria-label="عرض ${escapeHtml(product.name)}">
                   <img class="floating-sneaker" src="${product.images[0] || HERO_IMAGE}" alt="${escapeHtml(product.name)}">
                   <span class="hero-slide-copy">
                     <small>${escapeHtml(product.brand)} / ${escapeHtml(product.category)}</small>
@@ -151,7 +139,6 @@ export function renderHome() {
                   </span>
                 </a>`;
               }).join("")}
-              <span class="shoe-spotlight" aria-hidden="true"></span>
             </div>
             <div class="hero-carousel-controls" aria-label="التحكم بعروض السنيكرز">
               <button type="button" class="carousel-btn" data-action="hero-prev" aria-label="السنيكرز السابق">‹</button>

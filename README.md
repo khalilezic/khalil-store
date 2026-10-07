@@ -22,8 +22,9 @@ localStorage persistence) and improves two layers:
   into graphite black while product cards stay crisp and readable.
 - **Streetwear typography** → heavy Arabic Cairo paired with compact,
   athletic Barlow Condensed for Latin headings, prices and labels.
-- **Atmosphere** → vivid shoe-matched backgrounds, a circular side-lit
-  flashlight highlight, and a cast shadow that shifts opposite the light.
+- **Atmosphere** → shoe-matched color washes over deep black gradients,
+  animated across the page and softly following the pointer; no flashlight
+  or slide-driven shadow is applied to the sneaker.
 - **Storefront details** → large cards, pill controls, and a floating
   bottom dock with a sliding light indicator that follows the live theme.
 
