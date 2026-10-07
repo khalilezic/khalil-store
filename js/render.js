@@ -142,11 +142,11 @@ export function renderHome() {
               }).join("")}
             </div>
             <div class="hero-carousel-controls" aria-label="التحكم بعروض السنيكرز">
-              <button type="button" class="carousel-btn" data-action="hero-prev" aria-label="السنيكرز السابق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+              <button type="button" class="carousel-btn" data-action="hero-prev" aria-label="السنيكرز السابق">‹</button>
               <div class="carousel-dots">
                 ${heroProducts.map((product, index) => `<button type="button" class="carousel-dot ${index === 0 ? "active" : ""}" data-action="hero-dot" data-index="${index}" aria-label="عرض ${index + 1}"></button>`).join("")}
               </div>
-              <button type="button" class="carousel-btn" data-action="hero-next" aria-label="السنيكرز التالي"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+              <button type="button" class="carousel-btn" data-action="hero-next" aria-label="السنيكرز التالي">›</button>
             </div>
           </div>
           ${onSale[0] ? `
