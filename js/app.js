@@ -35,6 +35,8 @@ let ambientPointerFrame = 0;
 let themeRippleTimer = null;
 let heroTouchStartX = null;
 
+const isSmallScreen = () => window.matchMedia("(max-width: 700px)").matches;
+
 try {
   const savedThemeColor = window.sessionStorage.getItem("khalil-store-site-color");
   if (/^#[\da-f]{6}$/i.test(savedThemeColor || "")) {
@@ -43,7 +45,7 @@ try {
 } catch { /* Storage can be unavailable in private browsing; the default theme still works. */ }
 
 window.addEventListener("pointermove", (event) => {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || ambientPointerFrame) return;
+  if (isSmallScreen() || window.matchMedia("(prefers-reduced-motion: reduce)").matches || ambientPointerFrame) return;
   ambientPointerFrame = requestAnimationFrame(() => {
     document.documentElement.style.setProperty("--ambient-x", `${(event.clientX / window.innerWidth * 100).toFixed(1)}%`);
     document.documentElement.style.setProperty("--ambient-y", `${(event.clientY / window.innerHeight * 100).toFixed(1)}%`);
@@ -52,6 +54,7 @@ window.addEventListener("pointermove", (event) => {
 }, { passive: true });
 
 window.addEventListener("click", (event) => {
+  if (isSmallScreen()) return;
   const root = document.documentElement;
   root.style.setProperty("--click-x", `${(event.clientX / window.innerWidth * 100).toFixed(1)}%`);
   root.style.setProperty("--click-y", `${(event.clientY / window.innerHeight * 100).toFixed(1)}%`);

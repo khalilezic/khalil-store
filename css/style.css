@@ -2065,3 +2065,41 @@ body.site-theme .bottom-nav,
 body.home-theme .bottom-nav,
 body.site-theme .product-card,
 body.home-theme .product-card { background: #fff !important; }
+
+/* Smooth, lightweight carousel polish */
+.hero-carousel { isolation: isolate; contain: layout paint; }
+.hero-slide { backface-visibility: hidden; transform: translate3d(var(--slide-x), 0, 0) scale(.97); transition: opacity .58s ease, transform .68s cubic-bezier(.22,1,.36,1), visibility 0s linear .68s; }
+.hero-slide.active { transform: translate3d(0, 0, 0) scale(1); }
+.carousel-btn {
+  width: 40px; height: 40px; padding: 0;
+  border: 1px solid color-mix(in srgb, var(--site-color) 30%, rgba(255,255,255,.4));
+  display: inline-flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .22s ease, background-color .35s ease, border-color .35s ease;
+}
+.carousel-btn svg { width: 17px; height: 17px; stroke-width: 2; transition: transform .22s ease; }
+.carousel-btn:hover { transform: translateY(-2px); }
+.carousel-btn:active { transform: scale(.92); }
+.carousel-btn:first-child:hover svg { transform: translateX(-2px); }
+.carousel-btn:last-child:hover svg { transform: translateX(2px); }
+.carousel-dot { transition: width .3s ease, background-color .45s ease, box-shadow .45s ease; }
+.floating-sneaker { animation-duration: 5.8s; }
+
+@media (max-width: 700px) {
+  body.home-theme::before { animation-duration: 30s; }
+  .hero-media::before { filter: blur(24px); opacity: .28; animation-duration: 20s; }
+  .sneaker-stage::before { filter: blur(20px); opacity: .58; animation-duration: 5.5s; }
+  .floating-sneaker { filter: saturate(1.04) contrast(1.02) drop-shadow(0 8px 16px color-mix(in srgb, var(--site-color) 32%, transparent)) !important; animation-duration: 6.8s; }
+  .hero-slide { transition-duration: .48s, .58s, .58s; }
+  .hero-carousel-controls { background: rgba(8,9,11,.72); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .carousel-btn { width: 36px; height: 36px; }
+  .carousel-btn:hover { transform: none; }
+  .carousel-btn:active { transform: scale(.9); }
+  .hero-slide-backdrop-title { text-shadow: 0 0 6px color-mix(in srgb, var(--site-color) 45%, transparent); }
+}
+@media (hover: none) {
+  .carousel-btn:hover svg, .carousel-btn:first-child:hover svg, .carousel-btn:last-child:hover svg { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide, .carousel-btn, .carousel-btn svg, .carousel-dot, .floating-sneaker { transition: none !important; animation: none !important; }
+}
