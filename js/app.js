@@ -47,8 +47,12 @@ try {
 window.addEventListener("pointermove", (event) => {
   if (isSmallScreen() || window.matchMedia("(prefers-reduced-motion: reduce)").matches || ambientPointerFrame) return;
   ambientPointerFrame = requestAnimationFrame(() => {
-    document.documentElement.style.setProperty("--ambient-x", `${(event.clientX / window.innerWidth * 100).toFixed(1)}%`);
-    document.documentElement.style.setProperty("--ambient-y", `${(event.clientY / window.innerHeight * 100).toFixed(1)}%`);
+    const pointerX = event.clientX / window.innerWidth;
+    const pointerY = event.clientY / window.innerHeight;
+    document.documentElement.style.setProperty("--ambient-x", `${(pointerX * 100).toFixed(1)}%`);
+    document.documentElement.style.setProperty("--ambient-y", `${(pointerY * 100).toFixed(1)}%`);
+    document.documentElement.style.setProperty("--hero-parallax-x", `${((pointerX - .5) * 14).toFixed(1)}px`);
+    document.documentElement.style.setProperty("--hero-parallax-y", `${((pointerY - .5) * 10).toFixed(1)}px`);
     ambientPointerFrame = 0;
   });
 }, { passive: true });

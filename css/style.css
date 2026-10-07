@@ -2497,3 +2497,26 @@ body.home-theme .hero-slide-backdrop-title {
 @media (max-width: 640px) {
   body.home-theme .hero-slide-backdrop-title { -webkit-text-stroke-width: 1px; }
 }
+
+/* Pointer parallax uses individual translate so existing transform animations stay intact. */
+body.home-theme .hero-slide-backdrop-title,
+body.home-theme .floating-sneaker,
+body.home-theme .decor-card,
+body.home-theme .decor-shoe,
+body.home-theme .decor-line,
+body.home-theme .decor-dot {
+  translate: var(--hero-parallax-x, 0px) var(--hero-parallax-y, 0px);
+  transition: translate .7s cubic-bezier(.22,1,.36,1);
+}
+body.home-theme .floating-sneaker { translate: calc(var(--hero-parallax-x, 0px) * .55) calc(var(--hero-parallax-y, 0px) * .55); }
+body.home-theme .hero-slide-backdrop-title { translate: calc(var(--hero-parallax-x, 0px) * .8) calc(var(--hero-parallax-y, 0px) * .8); }
+body.home-theme .decor-card { transition-duration: 1.1s; }
+body.home-theme .decor-shoe { transition-duration: 1.3s; }
+@media (max-width: 700px) {
+  body.home-theme .hero-slide-backdrop-title,
+  body.home-theme .floating-sneaker,
+  body.home-theme .decor-card,
+  body.home-theme .decor-shoe,
+  body.home-theme .decor-line,
+  body.home-theme .decor-dot { translate: none; }
+}
