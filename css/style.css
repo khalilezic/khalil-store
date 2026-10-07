@@ -428,6 +428,8 @@ body.home-theme .hero-cta .btn-outline:hover { background: #fff; color: #111216;
 .hero-slide { --slide-x: 54px; position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; visibility: hidden; pointer-events: none; transform: translate3d(var(--slide-x), 12px, 0) scale(.94) rotate(1deg); backface-visibility: hidden; will-change: opacity, transform; transition: opacity .92s cubic-bezier(.22,1,.36,1), transform 1.08s cubic-bezier(.22,1,.36,1), visibility 0s linear 1.08s; }
 .hero-carousel[data-direction="backward"] .hero-slide { --slide-x: -54px; }
 .hero-slide.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translate3d(0, 0, 0) scale(1) rotate(0); transition-delay: 0s; }
+.hero-slide-backdrop-title { position: absolute; z-index: 1; top: 50%; left: 50%; width: 100%; padding: 0 8px; color: #fff; opacity: 0; text-align: center; white-space: nowrap; text-transform: uppercase; font-family: Georgia, "Times New Roman", serif; font-size: clamp(28px, 4.4vw, 60px); font-weight: 900; line-height: .9; letter-spacing: -.055em; -webkit-text-stroke: 1px rgba(255,255,255,.36); text-shadow: 0 4px 22px rgba(0,0,0,.28); pointer-events: none; transform: translate3d(-50%, calc(-50% + 26px), 0) scale(.9) rotate(-3deg); filter: blur(4px); will-change: transform, opacity, filter; transition: opacity .78s ease, transform 1s cubic-bezier(.22,1,.36,1), filter .78s ease; }
+.hero-slide.active .hero-slide-backdrop-title { opacity: .42; transform: translate3d(-50%, -50%, 0) scale(1) rotate(-3deg); filter: blur(0); transition-delay: .06s; }
 .floating-sneaker { position: relative !important; z-index: 2 !important; width: 92% !important; max-height: 430px !important; padding: 28px !important; background: transparent !important; border-radius: 0 !important; box-shadow: none !important; mix-blend-mode: normal; filter: saturate(1.08) contrast(1.04) !important; animation: sneakerFloat 4.8s ease-in-out infinite; transform-origin: 50% 55%; will-change: transform; }
 @keyframes sneakerFloat { 0%,100% { transform: translateY(5px) rotate(-4deg); } 50% { transform: translateY(-18px) rotate(2deg); } }
 @keyframes color-haze-drift { from { transform: translate3d(-2%,1%,0) scale(1.04); } to { transform: translate3d(2%,-1%,0) scale(1.12); } }
@@ -1529,6 +1531,7 @@ body.home-theme .bottom-nav a.active { color: #fff; }
   body.home-theme::before,
   .hero-media::before,
   .hero-slide,
+  .hero-slide-backdrop-title,
   .hero-slide-copy,
   .floating-sneaker,
   .carousel-dot,
