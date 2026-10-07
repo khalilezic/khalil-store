@@ -124,7 +124,6 @@ export function renderHome() {
                 const hex = heroColors[product.id] || product.colors?.[0]?.hex || "#BBC1CA";
                 return `
                 <a class="hero-slide ${index === 0 ? "active" : ""}" data-hero-slide="${index}" data-shoe-color="${hex}" href="#/product/${product.id}" data-action="go-product" aria-label="عرض ${escapeHtml(product.name)}">
-                  <span class="hero-slide-backdrop-title" aria-hidden="true">${escapeHtml(product.name)}</span>
                   <img class="floating-sneaker" src="${product.images[0] || HERO_IMAGE}" alt="${escapeHtml(product.name)}">
                 </a>`;
               }).join("")}
