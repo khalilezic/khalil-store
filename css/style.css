@@ -1779,3 +1779,141 @@ body.site-theme .carousel-btn:hover { background: color-mix(in srgb, var(--site-
 body.site-theme .icon-btn .badge { background: var(--site-color); color: #08090B; box-shadow: 0 0 0 2px var(--paper); }
 body.site-theme .pay-chip.active { background: color-mix(in srgb, var(--site-color) 16%, #101216 84%); border-color: var(--site-color); }
 body.site-theme .tab-btn.active { color: var(--silver); border-bottom-color: var(--site-color); }
+/* ============================================================
+   v3 LIGHT MOTION SYSTEM — صفحات داخلية فاتحة، سطحيات متزامنة مع السلايدر
+   ============================================================ */
+:root {
+  --paper: #f7fbff;
+  --paper-2: #edf5fa;
+  --card: rgba(255,255,255,.88);
+  --line: color-mix(in srgb, #d9e5ec 76%, var(--site-color) 24%);
+  --line-soft: #e9f0f4;
+  --ink: #17212b;
+  --ink-soft: #263746;
+  --muted: #71808c;
+  --muted-2: #a1afb9;
+  --shadow-sm: 0 10px 28px rgba(37,67,86,.08);
+  --shadow-md: 0 18px 44px rgba(37,67,86,.12);
+}
+body.site-theme:not(.home-theme) {
+  color: var(--ink);
+  background: #f7fbff;
+  background-image:
+    radial-gradient(circle at var(--ambient-x) var(--ambient-y), color-mix(in srgb, var(--site-color) 11%, transparent), transparent 32%),
+    linear-gradient(135deg, #fbfdff 0%, #f2f8fb 58%, #edf4f7 100%);
+  transition: background .8s ease, color .45s ease;
+}
+body.site-theme:not(.home-theme)::before {
+  background:
+    radial-gradient(ellipse 62% 46% at var(--ambient-x) var(--ambient-y), color-mix(in srgb, var(--site-color) 15%, transparent), transparent 74%),
+    linear-gradient(160deg, rgba(255,255,255,.7), rgba(235,245,250,.34));
+  opacity: .72;
+  animation-duration: 24s;
+}
+body.site-theme:not(.home-theme) .site-header {
+  background: rgba(255,255,255,.82);
+  border-bottom-color: color-mix(in srgb, var(--site-color) 24%, #dce7ed 76%);
+}
+body.site-theme:not(.home-theme) .site-header .brand,
+body.site-theme:not(.home-theme) .site-header .main-nav a { color: var(--ink); }
+body.site-theme:not(.home-theme) .site-header .icon-btn {
+  background: rgba(255,255,255,.92);
+  border-color: var(--line);
+  color: var(--ink);
+}
+body.site-theme:not(.home-theme) .header-search { background: rgba(255,255,255,.92); }
+body.site-theme:not(.home-theme) .section {
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse 70% 58% at var(--ambient-x) var(--ambient-y), color-mix(in srgb, var(--site-color) 10%, transparent), transparent 76%),
+    linear-gradient(180deg, rgba(255,255,255,.58), rgba(244,249,251,.74));
+  transition: background .9s ease, color .45s ease;
+}
+body.site-theme:not(.home-theme) .section-head h2,
+body.site-theme:not(.home-theme) .section-head .see-all { color: var(--ink); }
+body.site-theme:not(.home-theme) .section-head p.sub { color: var(--muted); }
+body.site-theme:not(.home-theme) .site-footer {
+  color: var(--ink);
+  background: linear-gradient(140deg, #eef7fb 0%, #f9fcfd 70%);
+  border-top: 1px solid var(--line);
+}
+body.site-theme:not(.home-theme) .site-footer h4,
+body.site-theme:not(.home-theme) .site-footer a,
+body.site-theme:not(.home-theme) .site-footer p { color: var(--ink); }
+body.site-theme:not(.home-theme) .brand-strip {
+  background: rgba(255,255,255,.75);
+  border-color: var(--line);
+}
+body.site-theme:not(.home-theme) .brand-strip li { color: color-mix(in srgb, var(--ink) 58%, var(--site-color) 42%); }
+.product-card,
+.cat-card,
+.shop-layout aside,
+.summary-card,
+.form-grid,
+.pdp-gallery-main,
+.pdp-thumbs button,
+.pay-chip {
+  background: color-mix(in srgb, #fff 92%, var(--site-color) 8%);
+  border-color: var(--line);
+  transition: background .8s ease, border-color .55s ease, box-shadow .35s ease, transform .35s cubic-bezier(.22,1,.36,1);
+}
+.product-media,
+.cart-item .thumb,
+.pdp-gallery-main { background: color-mix(in srgb, #f2f8fb 88%, var(--site-color) 12%); transition: background .8s ease; }
+.badge-tag { background: var(--site-color); color: #10202a; box-shadow: 0 5px 14px color-mix(in srgb, var(--site-color) 24%, transparent); }
+body.site-theme:not(.home-theme) .fav-toggle { background: rgba(255,255,255,.9); color: var(--ink); border-color: var(--line); }
+body.site-theme:not(.home-theme) .fav-toggle:hover { background: var(--site-color); color: #10202a; }
+body.site-theme:not(.home-theme) .chip.active,
+body.site-theme:not(.home-theme) .size-pill.active { background: var(--site-color); color: #10202a; }
+body.site-theme:not(.home-theme) .pay-chip.active { background: color-mix(in srgb, #fff 82%, var(--site-color) 18%); color: var(--ink); border-color: var(--site-color); }
+body.site-theme:not(.home-theme) .order-success .check-circle { box-shadow: 0 14px 30px color-mix(in srgb, var(--site-color) 32%, transparent); }
+
+/* أيقونات دقيقة غير بلاستيكية مع حركة قصيرة عند التفاعل */
+.icon-btn, .carousel-btn, .category-icon, .fav-toggle, .nav-badge { transform: translateZ(0); }
+.icon-btn svg, .carousel-btn svg, .category-icon svg, .bottom-nav svg { stroke-linecap: round; stroke-linejoin: round; transition: transform .35s cubic-bezier(.22,1,.36,1), filter .35s ease; }
+.icon-btn:hover svg { transform: rotate(-8deg) scale(1.12); filter: drop-shadow(0 0 7px color-mix(in srgb, var(--site-color) 55%, transparent)); }
+.icon-btn:active svg { transform: scale(.86); }
+.category-icon { position: relative; overflow: hidden; }
+.category-icon::after { content:""; position:absolute; inset:-40%; background: linear-gradient(120deg, transparent 38%, rgba(255,255,255,.72) 50%, transparent 62%); transform: translateX(-120%) rotate(12deg); transition: transform .7s ease; }
+.cat-card:hover .category-icon::after { transform: translateX(120%) rotate(12deg); }
+.category-icon svg { animation: icon-float 4.5s ease-in-out infinite; }
+.cat-card:nth-child(2n) .category-icon svg { animation-delay: -.8s; }
+.cat-card:nth-child(3n) .category-icon svg { animation-delay: -1.6s; }
+@keyframes icon-float { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-3px) rotate(-4deg); } }
+
+/* سلايدر ثابت بصرياً: أزرار كبيرة، انتقالات لا تتقطع، ولمعة عند التغيير */
+.hero-carousel { touch-action: pan-y; }
+.hero-slide { transform: translate3d(var(--slide-x), 14px, 0) scale(.965); transition: opacity .72s cubic-bezier(.22,1,.36,1), transform .88s cubic-bezier(.22,1,.36,1), visibility 0s linear .88s; }
+.hero-slide.active { transform: translate3d(0,0,0) scale(1); }
+.hero-carousel-controls { gap: 12px; padding: 8px 10px; background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.28); box-shadow: 0 10px 26px rgba(0,0,0,.16); }
+.carousel-btn { width: 38px; height: 38px; font-size: 0; background: color-mix(in srgb, var(--site-color) 86%, #fff 14%); color: #10202a; box-shadow: 0 8px 18px color-mix(in srgb, var(--site-color) 30%, transparent); }
+.carousel-btn::before { display: none; }
+.carousel-btn svg { width: 18px; height: 18px; }
+.carousel-btn:hover { transform: translateY(-2px) scale(1.08); background: #fff; color: var(--ink); }
+.carousel-btn:active { transform: scale(.92); }
+.carousel-dot { width: 8px; height: 8px; background: rgba(255,255,255,.52); }
+.carousel-dot.active { width: 28px; background: var(--site-color); box-shadow: 0 0 12px color-mix(in srgb, var(--site-color) 64%, transparent); }
+.hero-tag { transition: background .8s ease, border-color .6s ease, transform .45s ease; }
+.hero-tag:hover { transform: translateY(-5px) rotate(-1deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .category-icon svg, .hero-slide, .icon-btn svg { animation: none !important; transition-duration: .01ms !important; }
+}
+
+body.site-theme:not(.home-theme) .promo-banner,
+body.site-theme:not(.home-theme) .about-hero {
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 84% 14%, color-mix(in srgb, var(--site-color) 22%, transparent), transparent 36%),
+    linear-gradient(135deg, #ffffff 0%, #edf7fb 100%);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+body.site-theme:not(.home-theme) .promo-banner p,
+body.site-theme:not(.home-theme) .about-hero p { color: var(--muted); }
+body.site-theme:not(.home-theme) .promo-banner .btn-primary { background: var(--site-color); color: #10202a; border-color: var(--site-color); }
+body.site-theme:not(.home-theme) .promo-banner img { background: rgba(255,255,255,.58); }
+body.site-theme:not(.home-theme) .perk-card,
+body.site-theme:not(.home-theme) .contact-card { background: rgba(255,255,255,.82); }
+body.site-theme:not(.home-theme) .perk-card .ic { background: color-mix(in srgb, #edf7fb 80%, var(--site-color) 20%); color: var(--ink); }
+body.site-theme:not(.home-theme) .about-hero h1 { color: var(--ink); }

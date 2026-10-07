@@ -33,6 +33,7 @@ let heroTimer = null;
 let heroIndex = 0;
 let ambientPointerFrame = 0;
 let themeRippleTimer = null;
+let heroTouchStartX = null;
 
 try {
   const savedThemeColor = window.sessionStorage.getItem("khalil-store-site-color");
@@ -160,18 +161,16 @@ function setHeroSlide(nextIndex) {
   const direction = forwardSteps <= slides.length / 2 ? "forward" : "backward";
   const outgoing = slides[heroIndex];
   const incoming = slides[next];
-  if (outgoing) outgoing.style.removeProperty("--slide-x");
   if (carousel) carousel.dataset.direction = direction;
-  if (incoming) {
-    incoming.style.transition = "none";
-    incoming.style.setProperty("--slide-x", direction === "forward" ? "54px" : "-54px");
-    void incoming.offsetWidth;
-    incoming.style.removeProperty("transition");
-  }
+  if (outgoing) outgoing.dataset.state = "leaving";
+  if (incoming) incoming.dataset.state = "entering";
   heroIndex = next;
   slides.forEach((slide, index) => slide.classList.toggle("active", index === heroIndex));
   dots.forEach((dot, index) => dot.classList.toggle("active", index === heroIndex));
   applyHeroTheme(slides[heroIndex]);
+  window.setTimeout(() => {
+    slides.forEach((slide) => delete slide.dataset.state);
+  }, 900);
 }
 
 function startHeroCarousel() {
@@ -188,6 +187,17 @@ function startHeroCarousel() {
     clearInterval(heroTimer);
     heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), 5200);
   });
+  stage.addEventListener("touchstart", (event) => {
+    heroTouchStartX = event.changedTouches[0]?.clientX ?? null;
+    clearInterval(heroTimer);
+  }, { passive: true });
+  stage.addEventListener("touchend", (event) => {
+    if (heroTouchStartX === null) return;
+    const delta = event.changedTouches[0]?.clientX - heroTouchStartX;
+    if (Math.abs(delta) > 42) setHeroSlide(heroIndex + (delta < 0 ? 1 : -1));
+    heroTouchStartX = null;
+    heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), 5200);
+  }, { passive: true });
 }
 
 function observeProductCards() {
