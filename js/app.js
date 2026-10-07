@@ -113,7 +113,22 @@ function setHeroSlide(nextIndex) {
   const slides = [...document.querySelectorAll("[data-hero-slide]")];
   const dots = [...document.querySelectorAll(".carousel-dot")];
   if (!slides.length) return;
-  heroIndex = (nextIndex + slides.length) % slides.length;
+  const next = (nextIndex + slides.length) % slides.length;
+  if (next === heroIndex) return;
+  const forwardSteps = (next - heroIndex + slides.length) % slides.length;
+  const carousel = document.querySelector(".hero-carousel");
+  const direction = forwardSteps <= slides.length / 2 ? "forward" : "backward";
+  const outgoing = slides[heroIndex];
+  const incoming = slides[next];
+  if (outgoing) outgoing.style.removeProperty("--slide-x");
+  if (carousel) carousel.dataset.direction = direction;
+  if (incoming) {
+    incoming.style.transition = "none";
+    incoming.style.setProperty("--slide-x", direction === "forward" ? "54px" : "-54px");
+    void incoming.offsetWidth;
+    incoming.style.removeProperty("transition");
+  }
+  heroIndex = next;
   slides.forEach((slide, index) => slide.classList.toggle("active", index === heroIndex));
   dots.forEach((dot, index) => dot.classList.toggle("active", index === heroIndex));
 }
