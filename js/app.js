@@ -32,6 +32,14 @@ let shopFilters = { category: "", brand: "", sort: "featured", q: "", priceMax: 
 let heroTimer = null;
 let heroIndex = 0;
 let ambientPointerFrame = 0;
+let themeRippleTimer = null;
+
+try {
+  const savedThemeColor = window.sessionStorage.getItem("khalil-store-site-color");
+  if (/^#[\da-f]{6}$/i.test(savedThemeColor || "")) {
+    document.documentElement.style.setProperty("--site-color", savedThemeColor);
+  }
+} catch { /* Storage can be unavailable in private browsing; the default theme still works. */ }
 
 window.addEventListener("pointermove", (event) => {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || ambientPointerFrame) return;
@@ -41,6 +49,19 @@ window.addEventListener("pointermove", (event) => {
     ambientPointerFrame = 0;
   });
 }, { passive: true });
+
+window.addEventListener("click", (event) => {
+  const root = document.documentElement;
+  root.style.setProperty("--click-x", `${(event.clientX / window.innerWidth * 100).toFixed(1)}%`);
+  root.style.setProperty("--click-y", `${(event.clientY / window.innerHeight * 100).toFixed(1)}%`);
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const body = document.body;
+  body.classList.remove("theme-click-ripple");
+  void body.offsetWidth;
+  body.classList.add("theme-click-ripple");
+  clearTimeout(themeRippleTimer);
+  themeRippleTimer = setTimeout(() => body.classList.remove("theme-click-ripple"), 1150);
+}, { passive: true, capture: true });
 
 const filtersToQueryString = () => buildQuery(shopFilters);
 
@@ -124,6 +145,7 @@ function applyHeroTheme(slide) {
   const tone = slide.dataset.shoeColor;
   if (/^#[\da-f]{6}$/i.test(tone || "")) {
     document.documentElement.style.setProperty("--site-color", tone);
+    try { window.sessionStorage.setItem("khalil-store-site-color", tone); } catch { /* Keep theme in memory if storage is unavailable. */ }
   }
 }
 
@@ -214,6 +236,7 @@ function renderFavoritesPage() {
 
 function router() {
   const { path, query } = parseHash();
+  document.body.classList.add("site-theme");
   document.body.classList.toggle("home-theme", path === "/");
   if (path === "/") {
     app.innerHTML = renderHome();
