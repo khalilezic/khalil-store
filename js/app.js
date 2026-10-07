@@ -36,6 +36,12 @@ let themeRippleTimer = null;
 let heroTouchStartX = null;
 
 const isSmallScreen = () => window.matchMedia("(max-width: 700px)").matches;
+const isLowPerformanceDevice = () => {
+  const cores = Number(navigator.hardwareConcurrency || 8);
+  const memory = Number(navigator.deviceMemory || 8);
+  return cores <= 4 || memory <= 4;
+};
+if (isLowPerformanceDevice()) document.documentElement.classList.add("low-performance");
 
 try {
   const savedThemeColor = window.sessionStorage.getItem("khalil-store-site-color");

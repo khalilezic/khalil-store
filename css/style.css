@@ -2631,3 +2631,49 @@ body.home-theme .hero-cta .btn-primary::after { font-family: var(--font-en); fon
   body.home-theme .hero-slide-backdrop-title,
   body.home-theme .hero-cta .btn-primary { animation: none !important; }
 }
+
+/* Performance pass: animate transform/opacity, not expensive filter interpolation. */
+body.home-theme .floating-sneaker {
+  animation: sneakerFloat 5.8s ease-in-out infinite !important;
+  filter: saturate(1.1) contrast(1.04) drop-shadow(0 14px 18px rgba(0,0,0,.3)) drop-shadow(0 0 24px color-mix(in srgb, var(--site-color) 62%, transparent)) !important;
+  will-change: transform;
+}
+body.home-theme .hero-slide {
+  filter: none;
+  transition: opacity .62s cubic-bezier(.22,1,.36,1), transform .78s cubic-bezier(.22,1,.36,1), visibility 0s linear .78s;
+  will-change: opacity, transform;
+}
+body.home-theme .hero-slide.active { filter: none; }
+body.home-theme .hero-slide::after { filter: blur(16px); animation-duration: 6.5s; }
+body.home-theme .hero-slide-backdrop-title { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--site-color) 28%, transparent)); }
+
+/* Automatic low-power mode: preserves the composition while reducing GPU work. */
+html.low-performance body.home-theme .floating-sneaker {
+  animation-duration: 7.2s !important;
+  filter: saturate(1.04) contrast(1.02) drop-shadow(0 10px 14px rgba(0,0,0,.26)) drop-shadow(0 0 16px color-mix(in srgb, var(--site-color) 48%, transparent)) !important;
+}
+html.low-performance body.home-theme .hero-slide-backdrop-title {
+  animation-duration: 24s !important;
+  filter: none !important;
+}
+html.low-performance body.home-theme .hero-slide::after {
+  filter: blur(10px);
+  animation-duration: 9s;
+}
+html.low-performance body.home-theme .decor-card,
+html.low-performance body.home-theme .decor-shoe,
+html.low-performance body.home-theme .decor-dot {
+  animation-duration: 16s !important;
+}
+html.low-performance body.home-theme .decor-shoe { opacity: .12; }
+html.low-performance body.home-theme .hero-carousel-controls { -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+@media (max-width: 700px) {
+  body.home-theme .floating-sneaker {
+    animation-duration: 7s !important;
+    filter: saturate(1.06) contrast(1.02) drop-shadow(0 10px 14px rgba(0,0,0,.28)) drop-shadow(0 0 18px color-mix(in srgb, var(--site-color) 52%, transparent)) !important;
+  }
+  body.home-theme .hero-slide::after { filter: blur(9px); opacity: .56; }
+  body.home-theme .hero-slide-backdrop-title { filter: none; }
+  body.home-theme .decor-shoe { opacity: .1; }
+}
