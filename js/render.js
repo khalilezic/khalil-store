@@ -105,9 +105,14 @@ export function renderHome() {
     <!-- HERO --------------------------------------------------------- -->
     <section class="hero">
       <div class="container">
+        <div class="hero-topline" aria-label="khalil store">
+          <span class="hero-topline-mark">K</span>
+          <span class="hero-topline-name">khalil store</span>
+          <span class="hero-topline-tag">THE COMFORT OF LIFE</span>
+        </div>
         <div class="hero-copy">
           <div class="hero-cta">
-            <a href="#/shop" class="btn btn-primary" data-action="go-link">تسوّق الآن</a>
+            <a href="#/shop" class="btn btn-primary" data-action="go-link">اشتر الآن</a>
           </div>
         </div>
         <div class="hero-media">

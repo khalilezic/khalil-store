@@ -2364,3 +2364,136 @@ body.home-theme .decor-shoe-b { bottom: 4%; right: 1%; transform: rotate(16deg) 
   body.home-theme .decor-shoe { width: 82px; height: 64px; opacity: .13; }
   body.home-theme .hero-carousel-controls { left: 50%; bottom: 0; transform: translateX(-50%); }
 }
+
+/* Reference-inspired motion layer: decorative only, existing carousel/background remain untouched. */
+body.home-theme .hero-topline {
+  position: absolute;
+  z-index: 8;
+  top: 24px;
+  left: var(--shell-px);
+  right: var(--shell-px);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  direction: ltr;
+  pointer-events: none;
+  color: rgba(255,255,255,.86);
+}
+body.home-theme .hero-topline-mark {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border: 1px solid color-mix(in srgb, var(--site-color) 64%, #fff 36%);
+  color: var(--site-color);
+  font: 900 16px/1 var(--font-en);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--site-color) 35%, transparent);
+}
+body.home-theme .hero-topline-name {
+  font: 900 14px/1 var(--font-en);
+  letter-spacing: 2.2px;
+  text-transform: lowercase;
+}
+body.home-theme .hero-topline-tag {
+  margin-left: 16px;
+  padding-left: 16px;
+  border-left: 1px solid rgba(255,255,255,.28);
+  font: 700 9px/1 var(--font-en);
+  letter-spacing: 3.2px;
+  opacity: .55;
+}
+body.home-theme .hero-slide::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: 16%;
+  width: 52%;
+  height: 13%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--site-color) 52%, transparent), transparent 70%);
+  filter: blur(22px);
+  opacity: .7;
+  transform: translateX(-50%) scale(.88);
+  animation: hero-product-light 4.8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes hero-product-light {
+  0%, 100% { opacity: .48; transform: translateX(-50%) scale(.86); }
+  50% { opacity: .82; transform: translateX(-50%) scale(1.04); }
+}
+body.home-theme .hero-slide-backdrop-title {
+  animation: hero-type-parallax 16s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+@keyframes hero-type-parallax {
+  from { transform: translate3d(-50%,-50%,0) rotate(180deg) translate3d(-7px,0,0) scaleY(.98); opacity: .66; }
+  to { transform: translate3d(-50%,-50%,0) rotate(180deg) translate3d(8px,-8px,0) scaleY(1.02); opacity: .94; }
+}
+body.home-theme .hero-slide-backdrop-title::before { animation: hero-type-glow 7s ease-in-out infinite alternate; }
+@keyframes hero-type-glow {
+  from { opacity: .42; transform: scale(.92); }
+  to { opacity: .92; transform: scale(1.08); }
+}
+body.home-theme .decor-card,
+body.home-theme .decor-line,
+body.home-theme .decor-dot,
+body.home-theme .decor-shoe { will-change: transform; }
+body.home-theme .decor-card-a { animation: decor-float-a 8s ease-in-out infinite; }
+body.home-theme .decor-card-b { animation: decor-float-b 9s ease-in-out infinite; }
+body.home-theme .decor-shoe-a { animation: decor-shoe-a 10s ease-in-out infinite; }
+body.home-theme .decor-shoe-b { animation: decor-shoe-b 11s ease-in-out infinite; }
+body.home-theme .decor-dot-a { animation: decor-dot-pulse 4.6s ease-in-out infinite; }
+body.home-theme .decor-dot-b { animation: decor-dot-pulse 5.4s ease-in-out infinite reverse; }
+@keyframes decor-float-a { 0%,100% { transform: translate3d(0,0,0) rotate(-8deg); } 50% { transform: translate3d(7px,-12px,0) rotate(-4deg); } }
+@keyframes decor-float-b { 0%,100% { transform: translate3d(0,0,0) rotate(8deg); } 50% { transform: translate3d(-8px,9px,0) rotate(13deg); } }
+@keyframes decor-shoe-a { 0%,100% { transform: translate3d(0,0,0) rotate(-18deg); } 50% { transform: translate3d(10px,-9px,0) rotate(-12deg); } }
+@keyframes decor-shoe-b { 0%,100% { transform: translate3d(0,0,0) rotate(16deg) scaleX(-1); } 50% { transform: translate3d(-11px,8px,0) rotate(22deg) scaleX(-1); } }
+@keyframes decor-dot-pulse { 0%,100% { opacity: .45; transform: scale(.82); } 50% { opacity: 1; transform: scale(1.25); } }
+body.home-theme .hero-cta .btn-primary { position: relative; overflow: hidden; isolation: isolate; }
+body.home-theme .hero-cta .btn-primary::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -30%; bottom: -30%; left: -42%;
+  width: 28%;
+  transform: skewX(-18deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.9), transparent);
+  filter: blur(2px);
+  animation: cta-light-pass 4.2s ease-in-out infinite;
+}
+@keyframes cta-light-pass {
+  0%, 38% { left: -42%; opacity: 0; }
+  48% { opacity: .9; }
+  66%, 100% { left: 132%; opacity: 0; }
+}
+body.home-theme .hero-cta .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 8px 8px 0 rgba(255,255,255,.14), 0 0 34px color-mix(in srgb, var(--site-color) 58%, transparent); }
+@media (max-width: 640px) {
+  body.home-theme .hero-topline { top: 15px; left: 16px; right: 16px; }
+  body.home-theme .hero-topline-mark { width: 23px; height: 23px; font-size: 14px; }
+  body.home-theme .hero-topline-name { font-size: 12px; letter-spacing: 1.6px; }
+  body.home-theme .hero-topline-tag { margin-left: 7px; padding-left: 8px; font-size: 7px; letter-spacing: 1.8px; }
+  body.home-theme .hero-slide::after { bottom: 22%; width: 62%; }
+  body.home-theme .decor-line-a { top: 19%; right: 9%; height: 44px; }
+  body.home-theme .decor-line-b { bottom: 26%; left: 8%; height: 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.home-theme .hero-slide-backdrop-title,
+  body.home-theme .hero-slide-backdrop-title::before,
+  body.home-theme .hero-slide::after,
+  body.home-theme .decor-card,
+  body.home-theme .decor-line,
+  body.home-theme .decor-dot,
+  body.home-theme .decor-shoe,
+  body.home-theme .hero-cta .btn-primary::before { animation: none !important; }
+}
+
+/* Stronger editorial lettering: translucent fill remains behind the product. */
+body.home-theme .hero-slide-backdrop-title {
+  -webkit-text-fill-color: color-mix(in srgb, var(--site-color) 16%, transparent);
+  -webkit-text-stroke: 2px color-mix(in srgb, var(--site-color) 48%, #fff 52%);
+  text-shadow: 0 0 20px color-mix(in srgb, var(--site-color) 24%, transparent);
+}
+@media (max-width: 640px) {
+  body.home-theme .hero-slide-backdrop-title { -webkit-text-stroke-width: 1px; }
+}
