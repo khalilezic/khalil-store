@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>khalil store — متجر سنيكرز عصري</title>
+  <meta name="description" content="khalil store — اختيارات سنيكرز أصلية، توصيل سريع، وتجربة تسوق تفاعلية.">
+  <meta name="theme-color" content="#0F1014">
+  <link rel="icon" type="image/png" href="https://media.base44.com/images/public/6a981e557cb6d3db946f8ae9/9a55004e0_generated_image.png">
+  <!--
+    khalil store v2 — Premium Sneaker Store (static front-end, zero dependencies).
+    Design language fuses:
+      • ATLETE TREND's clean editorial typography and white product photography look
+      • Nike/Adidas luxury mockups' bold black hero and pill-shaped CTAs
+      • Streetwear concept's large-radius cards and dual-CTA bottom dock
+      • Learn Up's high-contrast monochrome copy / line-art accents
+    All Arabic strings, RTL layout, products, routes and interactions preserved.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ============== HEADER ============== -->
+  <header class="site-header">
+    <div class="container header-row">
+      <a href="#/" class="brand" data-action="go-link">
+        <span class="brand-mark" aria-hidden="true">K</span>
+        <span>khalil store</span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="القائمة الرئيسية">
+        <a href="#/" data-route="/" data-action="go-link">الرئيسية</a>
+        <a href="#/shop" data-route="/shop" data-action="go-link">المتجر</a>
+        <a href="#/shop?category=running" data-route="/shop" data-action="go-link">الجري</a>
+        <a href="#/shop?category=lifestyle" data-route="/shop" data-action="go-link">ستايل يومي</a>
+        <a href="#/about" data-route="/about" data-action="go-link">عن المتجر</a>
+      </nav>
+
+      <form class="header-search" id="headerSearchForm" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+        <input type="text" id="headerSearchInput" placeholder="ابحث عن حذاء أو علامة تجارية…" aria-label="بحث في المتجر">
+      </form>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="favHeaderBtn" aria-label="المفضلة" data-action="go-link" data-href="#/favorites">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6c-1.9-1.9-5-1.9-6.9 0L12 5.5l-1.9-1.9c-1.9-1.9-5-1.9-6.9 0-1.9 1.9-1.9 5 0 6.9L12 19l8.8-8.5c1.9-1.9 1.9-5 0-6.9z"></path></svg>
+          <span class="badge" id="favBadge" hidden>0</span>
+        </button>
+        <button class="icon-btn" id="cartHeaderBtn" aria-label="السلة" data-action="go-link" data-href="#/cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          <span class="badge" id="cartBadge" hidden>0</span>
+        </button>
+        <button class="icon-btn burger" id="burgerBtn" aria-label="القائمة">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile dropdown menu -->
+    <nav class="mobile-nav" id="mobileNav" hidden>
+      <a href="#/" data-action="go-link">الرئيسية</a>
+      <a href="#/shop" data-action="go-link">المتجر</a>
+      <a href="#/shop?category=running" data-action="go-link">الجري</a>
+      <a href="#/shop?category=lifestyle" data-action="go-link">ستايل يومي</a>
+      <a href="#/about" data-action="go-link">عن المتجر</a>
+    </nav>
+  </header>
+
+  <!-- ============== MAIN MOUNT POINT ============== -->
+  <main id="app" class="page-shell"></main>
+
+  <!-- ============== FOOTER ============== -->
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-brand">
+        <a href="#/" class="brand" data-action="go-link">
+          <span class="brand-mark" aria-hidden="true">K</span>
+          <span>khalil store</span>
+        </a>
+        <p>سنيكرز أصلية. اختيارات مدروسة. زوجك القادم في متجر واحد.</p>
+        <div class="social-row">
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="TikTok">TT</a>
+          <a href="#" aria-label="X">X</a>
+        </div>
+      </div>
+
+      <div>
+        <h4>تسوّق</h4>
+        <ul>
+          <li><a href="#/shop?category=running" data-action="go-link">أحذية الجري</a></li>
+          <li><a href="#/shop?category=basketball" data-action="go-link">كرة السلة</a></li>
+          <li><a href="#/shop?category=lifestyle" data-action="go-link">ستايل يومي</a></li>
+          <li><a href="#/shop?sort=sale" data-action="go-link">التخفيضات</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>الشركة</h4>
+        <ul>
+          <li><a href="#/about" data-action="go-link">من نحن</a></li>
+          <li><a href="#/about" data-action="go-link">تواصل معنا</a></li>
+          <li><a href="#/favorites" data-action="go-link">المفضلة</a></li>
+          <li><a href="#/cart" data-action="go-link">سلة المشتريات</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>ابقَ على اطلاع</h4>
+        <p>احصل على وصول مبكر للإصدارات والعروض الخاصة.</p>
+        <form class="newsletter-row" data-action="newsletter-form">
+          <input type="email" placeholder="بريدك الإلكتروني" required>
+          <button class="btn btn-primary btn-sm" type="submit">اشترك</button>
+        </form>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© 2026 khalil store. جميع الحقوق محفوظة.</span>
+      <span>تجربة متجر مستقلة — بدون خادم خلفي.</span>
+    </div>
+  </footer>
+
+  <!-- ============== MOBILE BOTTOM NAV ============== -->
+  <nav class="bottom-nav" aria-label="التنقل السفلي">
+    <ul>
+      <li><a href="#/" data-route="/" data-action="go-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
+        <span>الرئيسية</span>
+      </a></li>
+      <li><a href="#/shop" data-route="/shop" data-action="go-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+        <span>المتجر</span>
+      </a></li>
+      <li><a href="#/favorites" data-route="/favorites" data-action="go-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6c-1.9-1.9-5-1.9-6.9 0L12 5.5l-1.9-1.9c-1.9-1.9-5-1.9-6.9 0-1.9 1.9-1.9 5 0 6.9L12 19l8.8-8.5c1.9-1.9 1.9-5 0-6.9z"></path></svg>
+        <span>المفضلة</span>
+        <em class="nav-badge" id="favBadgeMobile" hidden>0</em>
+      </a></li>
+      <li><a href="#/cart" data-route="/cart" data-action="go-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span>السلة</span>
+        <em class="nav-badge" id="cartBadgeMobile" hidden>0</em>
+      </a></li>
+      <li><a href="#/about" data-route="/about" data-action="go-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>حسابي</span>
+      </a></li>
+    </ul>
+  </nav>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
