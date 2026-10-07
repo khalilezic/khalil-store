@@ -2575,3 +2575,59 @@ body.home-theme .floating-sneaker {
 @media (prefers-reduced-motion: reduce) {
   body.home-theme .hero-slide { filter: none; transition: none !important; }
 }
+
+/* Final glow pass: floating shoes, oversized moving type and premium CTA font. */
+body.home-theme .floating-sneaker {
+  filter: saturate(1.14) contrast(1.06)
+    drop-shadow(0 18px 22px rgba(0,0,0,.34))
+    drop-shadow(0 0 12px rgba(255,255,255,.48))
+    drop-shadow(0 0 32px color-mix(in srgb, var(--site-color) 78%, transparent))
+    drop-shadow(0 0 64px color-mix(in srgb, var(--site-color) 38%, transparent)) !important;
+  animation: sneakerFloat 4.8s ease-in-out infinite, sneaker-glow-pulse 4.8s ease-in-out infinite;
+}
+@keyframes sneaker-glow-pulse {
+  0%, 100% { filter: saturate(1.1) contrast(1.05) drop-shadow(0 18px 22px rgba(0,0,0,.34)) drop-shadow(0 0 10px rgba(255,255,255,.38)) drop-shadow(0 0 28px color-mix(in srgb, var(--site-color) 65%, transparent)); }
+  50% { filter: saturate(1.18) contrast(1.08) drop-shadow(0 20px 24px rgba(0,0,0,.3)) drop-shadow(0 0 18px rgba(255,255,255,.72)) drop-shadow(0 0 48px color-mix(in srgb, var(--site-color) 88%, transparent)); }
+}
+body.home-theme .decor-shoe {
+  opacity: .24;
+  filter: grayscale(.72) saturate(1.2) contrast(1.12)
+    drop-shadow(0 0 10px rgba(255,255,255,.3))
+    drop-shadow(0 0 26px color-mix(in srgb, var(--site-color) 68%, transparent));
+}
+body.home-theme .hero-slide-backdrop-title {
+  font-size: clamp(104px, 17vw, 290px);
+  animation: hero-type-parallax 13s ease-in-out infinite alternate, hero-type-breathe 7s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--site-color) 34%, transparent)) drop-shadow(0 0 42px color-mix(in srgb, var(--site-color) 18%, transparent));
+}
+@keyframes hero-type-breathe {
+  0%, 100% { letter-spacing: -.075em; opacity: .58; }
+  50% { letter-spacing: -.045em; opacity: .92; }
+}
+body.home-theme .hero-cta .btn-primary {
+  font-family: var(--font-en);
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 14px 32px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.18), 0 0 14px color-mix(in srgb, var(--site-color) 42%, transparent), 0 0 34px color-mix(in srgb, var(--site-color) 28%, transparent), 8px 8px 0 rgba(255,255,255,.12);
+  animation: cta-glow-pulse 3.8s ease-in-out infinite;
+}
+@keyframes cta-glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 0 12px color-mix(in srgb, var(--site-color) 35%, transparent), 0 0 26px color-mix(in srgb, var(--site-color) 22%, transparent), 8px 8px 0 rgba(255,255,255,.1); }
+  50% { box-shadow: 0 0 0 1px rgba(255,255,255,.38), 0 0 20px color-mix(in srgb, var(--site-color) 72%, transparent), 0 0 48px color-mix(in srgb, var(--site-color) 42%, transparent), 8px 8px 0 rgba(255,255,255,.16); }
+}
+body.home-theme .hero-cta .btn-primary::after { font-family: var(--font-en); font-size: 21px; font-weight: 900; }
+@media (max-width: 640px) {
+  body.home-theme .hero-slide-backdrop-title { font-size: clamp(62px, 17vw, 132px); }
+  body.home-theme .hero-cta .btn-primary { font-size: 15px; padding: 11px 24px; letter-spacing: 1px; }
+  body.home-theme .floating-sneaker { filter: saturate(1.1) contrast(1.04) drop-shadow(0 12px 16px rgba(0,0,0,.32)) drop-shadow(0 0 12px color-mix(in srgb, var(--site-color) 62%, transparent)) !important; }
+  body.home-theme .decor-shoe { opacity: .16; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.home-theme .floating-sneaker,
+  body.home-theme .hero-slide-backdrop-title,
+  body.home-theme .hero-cta .btn-primary { animation: none !important; }
+}
