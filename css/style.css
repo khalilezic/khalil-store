@@ -2103,3 +2103,68 @@ body.home-theme .product-card { background: #fff !important; }
 @media (prefers-reduced-motion: reduce) {
   .hero-slide, .carousel-btn, .carousel-btn svg, .carousel-dot, .floating-sneaker { transition: none !important; animation: none !important; }
 }
+
+/* Black flashlight glow for the fixed bottom navigation */
+.bottom-nav,
+body.site-theme .bottom-nav,
+body.home-theme .bottom-nav {
+  overflow: hidden;
+  isolation: isolate;
+  color: #07090b !important;
+}
+.bottom-nav::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 34%;
+  height: 150%;
+  top: -25%;
+  right: -38%;
+  pointer-events: none;
+  opacity: .26;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,.13), transparent);
+  transform: skewX(-18deg);
+  animation: nav-flashlight-sweep 5.8s ease-in-out infinite;
+}
+@keyframes nav-flashlight-sweep {
+  0%, 18% { right: -38%; opacity: 0; }
+  35% { opacity: .26; }
+  58%, 100% { right: 108%; opacity: 0; }
+}
+.bottom-nav a,
+body.site-theme .bottom-nav a,
+body.home-theme .bottom-nav a,
+.bottom-nav a.active,
+body.site-theme .bottom-nav a.active,
+body.home-theme .bottom-nav a.active,
+.bottom-nav a svg,
+body.site-theme .bottom-nav a svg,
+body.home-theme .bottom-nav a svg {
+  color: #07090b !important;
+  stroke: #07090b !important;
+}
+.bottom-nav .nav-indicator,
+body.site-theme .bottom-nav .nav-indicator,
+body.home-theme .bottom-nav .nav-indicator {
+  background: rgba(255,255,255,.72) !important;
+  border: 1px solid rgba(7,9,11,.12);
+  filter: drop-shadow(0 0 5px rgba(7,9,11,.18)) drop-shadow(0 0 16px rgba(7,9,11,.12)) !important;
+  transition: transform .55s cubic-bezier(.22,1,.36,1), width .55s cubic-bezier(.22,1,.36,1), height .55s cubic-bezier(.22,1,.36,1), filter .4s ease;
+}
+.bottom-nav .nav-indicator::before,
+body.site-theme .bottom-nav .nav-indicator::before,
+body.home-theme .bottom-nav .nav-indicator::before {
+  background: #07090b !important;
+  box-shadow: 0 0 5px rgba(7,9,11,.7), 0 0 14px rgba(7,9,11,.34), 0 0 28px rgba(7,9,11,.18) !important;
+}
+.carousel-arrow-icon { width: 20px !important; height: 20px !important; stroke-width: 2.4 !important; }
+.carousel-btn:hover .carousel-arrow-icon { filter: drop-shadow(0 0 5px currentColor); }
+@media (max-width: 700px) {
+  .bottom-nav::after { animation-duration: 7.2s; opacity: .2; }
+  .carousel-arrow-icon { width: 19px !important; height: 19px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav::after { animation: none !important; }
+}
+.bottom-nav::after { z-index: 0; }
+.bottom-nav > ul { position: relative; z-index: 1; }
