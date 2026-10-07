@@ -1917,3 +1917,76 @@ body.site-theme:not(.home-theme) .fav-toggle:hover { background: var(--site-colo
 @media (prefers-reduced-motion: reduce) {
   .hero-slide, .carousel-btn svg, .icon-btn svg, .category-icon { transition-duration: .01ms !important; }
 }
+
+/* Fixed white bottom dock + light product cards, independent from slide color. */
+.bottom-nav,
+body.site-theme .bottom-nav,
+body.home-theme .bottom-nav {
+  background: #fff !important;
+  color: #17212b !important;
+  border-color: #dfe8ed !important;
+  box-shadow: 0 -10px 26px rgba(28,55,70,.10);
+}
+.bottom-nav a,
+body.site-theme .bottom-nav a,
+body.home-theme .bottom-nav a,
+.bottom-nav a.active,
+body.site-theme .bottom-nav a.active,
+body.home-theme .bottom-nav a.active,
+.bottom-nav a.active svg,
+body.site-theme .bottom-nav a.active svg,
+body.home-theme .bottom-nav a.active svg {
+  color: #17212b !important;
+}
+.bottom-nav .nav-indicator,
+body.site-theme .bottom-nav .nav-indicator,
+body.home-theme .bottom-nav .nav-indicator {
+  background: #edf4f7 !important;
+  filter: none !important;
+  box-shadow: inset 0 0 0 1px #d8e4ea !important;
+}
+.bottom-nav .nav-indicator::before,
+body.site-theme .bottom-nav .nav-indicator::before,
+body.home-theme .bottom-nav .nav-indicator::before {
+  background: #17212b !important;
+  box-shadow: none !important;
+}
+.bottom-nav .nav-badge,
+body.site-theme .bottom-nav .nav-badge,
+body.home-theme .bottom-nav .nav-badge {
+  background: #17212b !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+/* Product cards stay readable and light on both home and interior pages. */
+body.site-theme .product-card,
+body.home-theme .product-card {
+  background: #fff !important;
+  color: #17212b !important;
+  border-color: #d9e5eb !important;
+  box-shadow: 0 10px 26px rgba(28,55,70,.09);
+}
+body.site-theme .product-card:hover,
+body.home-theme .product-card:hover { border-color: #c8d9e1 !important; }
+body.site-theme .product-card .product-media,
+body.home-theme .product-card .product-media {
+  background: #f1f7fa !important;
+}
+body.site-theme .product-card h3,
+body.home-theme .product-card h3,
+body.site-theme .product-card .brand-tag,
+body.home-theme .product-card .brand-tag,
+body.site-theme .product-card .price,
+body.home-theme .product-card .price {
+  color: #17212b !important;
+}
+body.site-theme .product-card .count,
+body.home-theme .product-card .count,
+body.site-theme .product-card .old-price,
+body.home-theme .product-card .old-price { color: #71818c !important; }
+body.site-theme .product-card .add-row .btn-primary,
+body.home-theme .product-card .add-row .btn-primary {
+  background: #17212b !important;
+  border-color: #17212b !important;
+  color: #fff !important;
+}
