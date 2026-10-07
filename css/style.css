@@ -2520,3 +2520,58 @@ body.home-theme .decor-shoe { transition-duration: 1.3s; }
   body.home-theme .decor-line,
   body.home-theme .decor-dot { translate: none; }
 }
+
+/* Final hero corrections: horizontal type, separated controls, premium slide crossfade. */
+body.home-theme .hero-slide-backdrop-title {
+  width: 94%;
+  max-width: 94%;
+  height: auto;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  white-space: nowrap;
+  font-size: clamp(76px, 14vw, 220px);
+  line-height: .78;
+  letter-spacing: -.07em;
+  text-align: center;
+  transform: translate3d(-50%,-50%,0) rotate(-4deg);
+}
+@keyframes hero-type-parallax {
+  from { transform: translate3d(-50%,-50%,0) translate3d(-7px,0,0) rotate(-4deg) scale(.98); opacity: .66; }
+  to { transform: translate3d(-50%,-50%,0) translate3d(8px,-8px,0) rotate(-2deg) scale(1.02); opacity: .94; }
+}
+body.home-theme .hero-carousel-controls {
+  left: auto;
+  right: 20px;
+  bottom: 22px;
+  z-index: 9;
+}
+body.home-theme .hero-slide {
+  filter: blur(7px);
+  transition: opacity .9s cubic-bezier(.22,1,.36,1), transform 1.08s cubic-bezier(.22,1,.36,1), filter .9s cubic-bezier(.22,1,.36,1), visibility 0s linear 1.08s;
+}
+body.home-theme .hero-slide.active { filter: blur(0); }
+body.home-theme .floating-sneaker {
+  filter: saturate(1.1) contrast(1.05) drop-shadow(0 18px 22px rgba(0,0,0,.3)) drop-shadow(0 0 30px color-mix(in srgb, var(--site-color) 64%, transparent)) !important;
+}
+@media (max-width: 900px) {
+  body.home-theme .hero-slide-backdrop-title { font-size: clamp(64px, 15vw, 150px); }
+}
+@media (max-width: 640px) {
+  body.home-theme .hero-slide-backdrop-title {
+    width: 110%;
+    max-width: 110%;
+    font-size: clamp(48px, 15vw, 96px);
+    letter-spacing: -.08em;
+  }
+  body.home-theme .hero-carousel-controls {
+    left: 50%;
+    right: auto;
+    bottom: 64px;
+    transform: translateX(-50%);
+  }
+  body.home-theme .hero-copy { bottom: 12px; }
+  body.home-theme .hero-slide { transition-duration: .72s, .88s, .72s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.home-theme .hero-slide { filter: none; transition: none !important; }
+}
