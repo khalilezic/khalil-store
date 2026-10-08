@@ -2790,3 +2790,176 @@ html.low-performance body.home-theme .hero-slide-backdrop-title::before { animat
   body.home-theme .hero-slide-backdrop-title,
   body.home-theme .hero-slide-backdrop-title::before { animation: none !important; }
 }
+
+
+/* Reference-matched shoe carousel: 3s hold, 2s diagonal blur/crossfade. */
+:root {
+  transition: --site-color 2s cubic-bezier(.22, 1, .36, 1),
+              --ambient-x .48s ease-out, --ambient-y .48s ease-out;
+}
+.hero-slide {
+  z-index: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(38vw, 42vh, 0) scale(.3);
+  filter: blur(20px);
+  backface-visibility: hidden;
+  will-change: transform, opacity, filter;
+  transition: transform 2s cubic-bezier(.22, 1, .36, 1),
+              opacity 1.9s cubic-bezier(.22, 1, .36, 1),
+              filter 1.75s ease-out,
+              visibility 0s linear 2s;
+  transition-delay: 0s;
+}
+.hero-slide.is-entering {
+  z-index: 4;
+  opacity: 0;
+  visibility: visible;
+  pointer-events: none;
+  transform: translate3d(38vw, 42vh, 0) scale(.3);
+  filter: blur(20px);
+  transition-delay: 0s;
+}
+.hero-slide.is-exiting {
+  z-index: 3;
+  opacity: 0;
+  visibility: visible;
+  pointer-events: none;
+  transform: translate3d(-32vw, -34vh, 0) scale(.3);
+  filter: blur(20px);
+  transition-delay: 0s;
+}
+.hero-slide.active {
+  z-index: 4;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+  transition-delay: 0s;
+}
+.hero-color-wash {
+  position: absolute;
+  z-index: 0;
+  inset: -18%;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 56%, color-mix(in srgb, var(--slide-color) 56%, transparent) 0%, color-mix(in srgb, var(--slide-color) 24%, transparent) 38%, transparent 72%);
+  filter: blur(24px);
+  transform: scale(.76);
+  transition: opacity 2s cubic-bezier(.22, 1, .36, 1), transform 2s cubic-bezier(.22, 1, .36, 1);
+  will-change: opacity, transform;
+}
+.hero-slide.active .hero-color-wash { opacity: .84; transform: scale(1); }
+.hero-slide.is-entering .hero-color-wash,
+.hero-slide.is-exiting .hero-color-wash { opacity: 0; }
+
+@media (max-width: 700px) {
+  .hero-slide { transform: translate3d(42vw, 38vh, 0) scale(.3); }
+  .hero-slide.is-entering { transform: translate3d(42vw, 38vh, 0) scale(.3); }
+  .hero-slide.is-exiting { transform: translate3d(-36vw, -30vh, 0) scale(.3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { transition: none !important; }
+  .hero-slide, .hero-color-wash { transition: none !important; }
+  .hero-slide.is-entering, .hero-slide.is-exiting,
+  .hero-slide.active { filter: none; }
+}
+html.low-performance .hero-slide { filter: none; transition: transform 2s cubic-bezier(.22, 1, .36, 1), opacity 2s ease-out, visibility 0s linear 2s; }
+html.low-performance .hero-color-wash { filter: none; transition: opacity 2s ease-out; }
+
+/* Specificity override: the legacy homepage performance pass used sub-second slides. */
+body.home-theme .hero-slide,
+body.home-theme .hero-slide.is-entering,
+body.home-theme .hero-slide.is-exiting,
+body.home-theme .hero-slide.active {
+  transition: transform 2s cubic-bezier(.22, 1, .36, 1),
+              opacity 2s ease-in-out,
+              filter 1.8s ease-out,
+              visibility 0s linear 2s;
+  transition-delay: 0s;
+  will-change: transform, opacity, filter;
+}
+body.home-theme .hero-slide { filter: blur(20px); }
+body.home-theme .hero-slide.is-entering { transform: translate3d(38vw, 42vh, 0) scale(.3); opacity: 0; visibility: visible; }
+body.home-theme .hero-slide.is-exiting { transform: translate3d(-32vw, -34vh, 0) scale(.3); opacity: 0; filter: blur(20px); visibility: visible; }
+body.home-theme .hero-slide.active { transform: translate3d(0, 0, 0) scale(1); opacity: 1; filter: blur(0); visibility: visible; }
+@media (max-width: 700px) {
+  body.home-theme .hero-slide.is-entering { transform: translate3d(42vw, 38vh, 0) scale(.3); }
+  body.home-theme .hero-slide.is-exiting { transform: translate3d(-36vw, -30vh, 0) scale(.3); }
+}
+html.low-performance body.home-theme .hero-slide,
+html.low-performance body.home-theme .hero-slide.is-entering,
+html.low-performance body.home-theme .hero-slide.is-exiting,
+html.low-performance body.home-theme .hero-slide.active {
+  filter: none;
+  transition: transform 2s cubic-bezier(.22, 1, .36, 1), opacity 2s ease-in-out, visibility 0s linear 2s;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.home-theme .hero-slide,
+  body.home-theme .hero-slide.is-entering,
+  body.home-theme .hero-slide.is-exiting,
+  body.home-theme .hero-slide.active { transition: none !important; }
+}
+html.low-performance body.home-theme .hero-color-wash { filter: none; }
+
+/* Keep the expensive blur confined to the product PNG; slide motion stays compositor-friendly. */
+body.home-theme .hero-slide,
+body.home-theme .hero-slide.is-entering,
+body.home-theme .hero-slide.is-exiting,
+body.home-theme .hero-slide.active {
+  filter: none;
+  transition: transform 2s cubic-bezier(.22, 1, .36, 1),
+              opacity 2s ease-in-out,
+              visibility 0s linear 2s;
+}
+body.home-theme .hero-slide .floating-sneaker {
+  filter: saturate(1.1) contrast(1.04)
+    drop-shadow(0 14px 18px rgba(0,0,0,.3))
+    drop-shadow(0 0 24px color-mix(in srgb, var(--site-color) 62%, transparent)) !important;
+  transition: filter 1.8s ease-out !important;
+}
+body.home-theme .hero-slide.is-entering .floating-sneaker,
+body.home-theme .hero-slide.is-exiting .floating-sneaker {
+  filter: blur(14px) saturate(1.1) contrast(1.04)
+    drop-shadow(0 14px 18px rgba(0,0,0,.3))
+    drop-shadow(0 0 24px color-mix(in srgb, var(--site-color) 62%, transparent)) !important;
+}
+body.home-theme .hero-slide .hero-color-wash {
+  filter: none;
+  transform: none;
+  transition: opacity 2s ease-in-out;
+  will-change: opacity;
+}
+body.home-theme .hero.is-transitioning .sneaker-stage::before,
+body.home-theme .hero.is-transitioning .floating-sneaker,
+body.home-theme .hero.is-transitioning .hero-slide-backdrop-title,
+body.home-theme .hero.is-transitioning .hero-cta .btn-primary {
+  animation-play-state: paused !important;
+}
+html.low-performance body.home-theme .hero-slide.is-entering .floating-sneaker,
+html.low-performance body.home-theme .hero-slide.is-exiting .floating-sneaker {
+  filter: saturate(1.1) contrast(1.04)
+    drop-shadow(0 14px 18px rgba(0,0,0,.3)) !important;
+}
+
+/* Single-shadow filter path keeps the blur light enough for phone GPUs. */
+body.home-theme .hero-slide .floating-sneaker,
+body.home-theme .hero-slide.active .floating-sneaker {
+  filter: saturate(1.08) contrast(1.04) drop-shadow(0 16px 20px rgba(0,0,0,.36)) !important;
+}
+body.home-theme .hero-slide.is-entering .floating-sneaker,
+body.home-theme .hero-slide.is-exiting .floating-sneaker {
+  filter: blur(12px) saturate(1.08) contrast(1.04) drop-shadow(0 16px 20px rgba(0,0,0,.36)) !important;
+}
+html.low-performance body.home-theme .hero-slide.is-entering .floating-sneaker,
+html.low-performance body.home-theme .hero-slide.is-exiting .floating-sneaker {
+  filter: saturate(1.08) contrast(1.04) drop-shadow(0 16px 20px rgba(0,0,0,.36)) !important;
+}
+body.home-theme .hero.is-transitioning *,
+body.home-theme .hero.is-transitioning::before,
+body.home-theme .hero.is-transitioning::after,
+body.home-theme .hero.is-transitioning *::before,
+body.home-theme .hero.is-transitioning *::after { animation-play-state: paused !important; }
