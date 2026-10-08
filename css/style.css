@@ -3030,3 +3030,22 @@ body.home-theme .shoe-reflection {
 
 body.home-theme .shoe-reflection { top: 62%; height: 170px; max-height: 170px; opacity: .48; filter: blur(.7px) saturate(.88) brightness(1.08); }
 @media (max-width: 700px) { body.home-theme .shoe-reflection { top: 62%; height: 155px; max-height: 155px; } }
+
+/* Match the reference's tighter hero proportions on phone-sized viewports. */
+@media (max-width: 700px) {
+  body.home-theme .hero .container { height: 540px; padding: 72px 14px 120px; }
+  body.home-theme .hero-media { height: 404px; min-height: 404px; overflow: visible; }
+  body.home-theme .sneaker-stage { height: 404px; min-height: 404px; overflow: visible; }
+  body.home-theme .hero-slide-backdrop-title {
+    top: 30%; transform: translate3d(-50%,-50%,0) scaleX(.66) scaleY(3.25);
+  }
+  body.home-theme .decor-card-a { top: -4%; }
+  body.home-theme .decor-card-b { bottom: 50%; }
+  body.home-theme .hero-carousel-controls { bottom: 24px; }
+}
+@media (max-width: 700px) {
+  body.home-theme .hero-slide-backdrop-title {
+    top: 25%; transform: translate3d(-50%,-50%,0) scaleX(.84) scaleY(2.65);
+  }
+  body.home-theme .floating-sneaker { max-height: min(72vw, 380px) !important; }
+}
