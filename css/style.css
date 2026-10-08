@@ -2790,3 +2790,194 @@ html.low-performance body.home-theme .hero-slide-backdrop-title::before { animat
   body.home-theme .hero-slide-backdrop-title,
   body.home-theme .hero-slide-backdrop-title::before { animation: none !important; }
 }
+
+
+/* ============================================================
+   KHALIL STORE — mobile reference storefront refresh
+   Keeps the existing carousel, swipe, auto-advance and sneaker float.
+   ============================================================ */
+body.home-theme {
+  --site-color: #c91f32;
+  color: #f7f4f2;
+  background: #050405;
+  background-image: none;
+}
+body.home-theme::before {
+  background:
+    radial-gradient(ellipse 86% 60% at 50% 53%, color-mix(in srgb, var(--site-color) 28%, transparent), transparent 75%),
+    radial-gradient(ellipse 110% 80% at 50% 80%, rgba(112,0,16,.25), transparent 72%),
+    linear-gradient(180deg, #070607 0%, #150509 48%, #030304 100%);
+}
+body.home-theme .site-header {
+  background: rgba(5,5,6,.88);
+  border-bottom-color: rgba(255,255,255,.16);
+}
+body.home-theme .site-header .header-row { gap: 20px; }
+body.home-theme .site-header .brand { flex-direction: row; font-family: var(--font-en); font-size: 23px; letter-spacing: 2px; }
+body.home-theme .site-header .brand-mark {
+  width: 40px; height: 40px; border-radius: 10px; background: #cf2035; color: #080607;
+  box-shadow: none; font-size: 22px;
+}
+body.home-theme .site-header .header-actions { gap: 12px; }
+body.home-theme .site-header .icon-btn {
+  width: 48px; height: 48px; background: rgba(255,255,255,.055);
+  border: 1px solid rgba(204,63,78,.28); color: #fff;
+}
+body.home-theme .hero {
+  min-height: 0;
+  background:
+    radial-gradient(ellipse 78% 68% at 50% 53%, color-mix(in srgb, var(--site-color) 18%, transparent), transparent 76%),
+    linear-gradient(160deg, #160609 0%, #100507 46%, #030304 100%);
+}
+body.home-theme .hero .container { position: relative; }
+body.home-theme .hero-topline { top: 30px; left: 6%; right: 6%; gap: 12px; }
+body.home-theme .hero-topline-mark { width: 30px; height: 30px; border-color: var(--site-color); color: var(--site-color); box-shadow: none; }
+body.home-theme .hero-topline-name { font-size: 16px; letter-spacing: 2px; }
+body.home-theme .hero-topline-tag { opacity: .78; letter-spacing: 3px; }
+body.home-theme .hero-media { width: 100%; max-width: 1080px; margin: 0 auto; }
+body.home-theme .sneaker-stage { border-radius: 0; background: transparent; box-shadow: none; }
+body.home-theme .sneaker-stage::before {
+  top: 64%; width: 82%; height: 22%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--site-color) 55%, transparent), transparent 72%);
+  filter: blur(28px); opacity: .72;
+}
+body.home-theme .hero-slide-backdrop-title {
+  top: 41%; width: 120%; max-width: 120%; height: auto; z-index: 1;
+  color: transparent; font-family: var(--font-en); font-size: clamp(96px, 18vw, 230px);
+  font-weight: 900; line-height: .8; letter-spacing: -.08em; white-space: nowrap;
+  background: linear-gradient(180deg,#fff 0%,#e6d8d8 48%,#8a7779 100%);
+  background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,.45);
+  text-shadow: 0 0 18px rgba(255,245,245,.22);
+  transform: translate3d(-50%,-50%,0) scaleX(.58);
+  animation: hero-type-breathe 7s ease-in-out infinite alternate;
+}
+body.home-theme .hero-slide-backdrop-title::before { display: none; }
+body.home-theme .floating-sneaker {
+  z-index: 3; width: min(112%, 780px) !important; max-height: 390px !important;
+  padding: 0 !important; filter: saturate(1.12) contrast(1.04) drop-shadow(0 20px 18px rgba(0,0,0,.6)) !important;
+  animation: sneakerFloat 5.8s ease-in-out infinite !important;
+}
+body.home-theme .shoe-reflection {
+  position: absolute; z-index: 2; left: 50%; top: 60%; width: min(88%, 700px); height: 25%;
+  object-fit: contain; padding: 0; border: 0; border-radius: 0; background: none;
+  box-shadow: none; opacity: .22; filter: blur(1.5px) saturate(.78);
+  transform: translateX(-50%) scaleY(-1);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.6), transparent 82%);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,.6), transparent 82%);
+  pointer-events: none;
+}
+body.home-theme .hero-slide-copy {
+  top: 62%; right: 1%; max-width: 154px; padding: 9px 12px;
+  border: 1px solid rgba(255,255,255,.55); border-radius: 15px;
+  background: rgba(5,5,6,.38); color: #fff; transform: none; gap: 3px;
+  opacity: 0; transition: opacity .45s ease .1s;
+}
+body.home-theme .hero-slide.active .hero-slide-copy { opacity: 1; transform: none; }
+body.home-theme .hero-slide-copy small { font-size: 9px; letter-spacing: 1px; color: #fff; }
+body.home-theme .hero-slide-copy strong { font: 700 12px/1.25 var(--font-en); letter-spacing: .4px; }
+body.home-theme .hero-decor { z-index: 4; }
+body.home-theme .decor-card { border-color: rgba(255,255,255,.5); background: rgba(12,4,6,.26); border-radius: 0; }
+body.home-theme .decor-card b { color: var(--site-color); }
+body.home-theme .decor-card-a { top: 19%; left: 6%; }
+body.home-theme .decor-card-b { bottom: 30%; right: 0; max-width: 134px; }
+body.home-theme .decor-line { background: var(--site-color); opacity: .92; }
+body.home-theme .decor-dot { background: var(--site-color); }
+body.home-theme .hero-copy {
+  z-index: 10; left: 50%; bottom: 26px; transform: translateX(-50%); width: max-content;
+}
+body.home-theme .hero-cta .btn-primary {
+  min-width: 250px; justify-content: center; padding: 15px 34px;
+  border: 1px solid rgba(255,255,255,.18); border-radius: 999px;
+  background: #d71f38; color: #150609; font-family: var(--font-ar);
+  font-size: 21px; font-weight: 900; letter-spacing: 0;
+  box-shadow: 0 0 24px color-mix(in srgb, var(--site-color) 42%, transparent), 0 7px 22px rgba(0,0,0,.4);
+}
+body.home-theme .hero-cta .btn-primary::after { content: "↗"; margin-right: 10px; font: 900 20px/1 var(--font-en); }
+body.home-theme .hero-cta .btn-primary::before { display: none; }
+body.home-theme .hero-carousel-controls {
+  left: 50%; right: auto; bottom: 12px; transform: translateX(-50%);
+  min-width: 204px; justify-content: space-between; gap: 14px; padding: 7px 9px;
+  border: 1px solid rgba(255,255,255,.36); border-radius: 999px;
+  background: rgba(8,6,7,.82); box-shadow: 0 10px 28px rgba(0,0,0,.4);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+body.home-theme .carousel-btn {
+  width: 48px; height: 48px; background: #fff; color: #111; font-size: 0;
+  box-shadow: 0 0 0 4px rgba(255,255,255,.12);
+}
+body.home-theme .carousel-btn svg { width: 23px; height: 23px; }
+body.home-theme .carousel-btn:hover { background: var(--site-color); color: #fff; }
+body.home-theme .carousel-dots { gap: 7px; }
+body.home-theme .carousel-dot { width: 10px; height: 10px; background: #777; }
+body.home-theme .carousel-dot.active { width: 10px; height: 10px; background: var(--site-color); box-shadow: 0 0 10px var(--site-color); }
+body.home-theme .brand-strip { background: #080708; border-color: rgba(255,255,255,.14); }
+body.home-theme .brand-strip ul { padding: 18px 0; }
+body.home-theme .brand-strip li { color: rgba(255,255,255,.52); letter-spacing: 2px; }
+body.home-theme .bottom-nav {
+  width: min(432px, calc(100vw - 56px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  padding: 11px 18px; background: rgba(5,6,7,.92); border: 1px solid rgba(255,255,255,.28);
+  box-shadow: 0 16px 38px rgba(0,0,0,.58); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+}
+body.home-theme .bottom-nav ul { justify-content: space-between; gap: 14px; }
+body.home-theme .bottom-nav .nav-indicator { display: none; }
+body.home-theme .bottom-nav a { width: 54px; height: 48px; color: #f5f5f5; }
+body.home-theme .bottom-nav a svg { width: 26px; height: 26px; }
+body.home-theme .bottom-nav a.active { color: #fff; transform: none; }
+body.home-theme .bottom-nav a.active svg { transform: none; animation: none; }
+
+@media (max-width: 700px) {
+  :root { --shell-px: 16px; --header-h: 62px; }
+  body.home-theme .site-header .header-row { height: 62px; gap: 10px; justify-content: space-between; }
+  body.home-theme .site-header .brand { gap: 9px; font-size: 19px; letter-spacing: 1.4px; }
+  body.home-theme .site-header .brand-mark { width: 34px; height: 34px; font-size: 20px; }
+  body.home-theme .site-header .header-actions { gap: 9px; }
+  body.home-theme .site-header .icon-btn { width: 42px; height: 42px; }
+  body.home-theme .site-header .icon-btn svg { width: 20px; height: 20px; }
+  body.home-theme .hero { overflow: hidden; padding: 0; }
+  body.home-theme .hero .container {
+    display: block; min-height: 0; height: 626px; padding: 72px 14px 150px;
+  }
+  body.home-theme .hero-topline { top: 20px; left: 18px; right: 18px; gap: 9px; }
+  body.home-theme .hero-topline-mark { width: 25px; height: 25px; font-size: 14px; }
+  body.home-theme .hero-topline-name { font-size: 13px; letter-spacing: 1.7px; }
+  body.home-theme .hero-topline-tag { margin-left: 5px; padding-left: 9px; font-size: 7px; letter-spacing: 1.6px; }
+  body.home-theme .hero-media, body.home-theme .sneaker-stage { min-height: 100%; height: 100%; }
+  body.home-theme .hero-slide-backdrop-title { top: 39%; width: 138%; max-width: 138%; font-size: clamp(115px, 31vw, 174px); transform: translate3d(-50%,-50%,0) scaleX(.55); }
+  body.home-theme .floating-sneaker { width: 122% !important; max-height: 350px !important; }
+  body.home-theme .shoe-reflection { top: 60%; width: 96%; height: 22%; }
+  body.home-theme .hero-slide-copy { top: 59%; right: 0; max-width: 108px; padding: 7px 9px; border-radius: 12px; }
+  body.home-theme .hero-slide-copy small { font-size: 7px; }
+  body.home-theme .hero-slide-copy strong { font-size: 10px; }
+  body.home-theme .decor-card { min-width: 82px; padding: 7px 8px; letter-spacing: .8px; }
+  body.home-theme .decor-card b { font-size: 11px; }
+  body.home-theme .decor-card small { font-size: 6px; }
+  body.home-theme .decor-card-a { top: 16%; left: 1%; }
+  body.home-theme .decor-card-b { right: 0; bottom: 31%; max-width: 105px; }
+  body.home-theme .decor-shoe { width: 78px; height: 65px; opacity: .12; }
+  body.home-theme .decor-line-a { top: 21%; right: 5%; height: 44px; }
+  body.home-theme .decor-line-b { bottom: 26%; left: 5%; height: 35px; }
+  body.home-theme .hero-copy { bottom: 22px; }
+  body.home-theme .hero-cta .btn-primary { min-width: 205px; padding: 12px 24px; font-size: 17px; }
+  body.home-theme .hero-carousel-controls { min-width: 176px; bottom: 12px; gap: 10px; padding: 6px 8px; }
+  body.home-theme .carousel-btn { width: 40px; height: 40px; }
+  body.home-theme .carousel-btn svg { width: 21px; height: 21px; }
+  body.home-theme .brand-strip ul { gap: 16px; }
+  body.home-theme .brand-strip li { font-size: 12px; }
+  body.home-theme .bottom-nav { width: calc(100vw - 56px); max-width: 432px; padding: 9px 15px; }
+  body.home-theme .bottom-nav ul { gap: 5px; }
+  body.home-theme .bottom-nav a { width: 48px; height: 44px; }
+  body.home-theme .bottom-nav a svg { width: 24px; height: 24px; }
+}
+@media (max-width: 380px) {
+  body.home-theme .hero .container { height: 590px; }
+  body.home-theme .hero-topline-tag { letter-spacing: 1px; }
+  body.home-theme .hero-slide-copy { max-width: 92px; }
+  body.home-theme .decor-card-b { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.home-theme .hero-slide-backdrop-title { animation: none !important; }
+}
+
+body.home-theme .hero-carousel-controls { direction: ltr; }
+@media (max-width: 700px) { body.home-theme .hero-slide-copy { display: none; } }

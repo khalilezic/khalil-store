@@ -98,7 +98,7 @@ export function renderHome() {
   const bestsellers = PRODUCTS.filter((p) => p.tags.includes("bestseller")).slice(0, 4);
   const newArrivals = PRODUCTS.filter((p) => p.tags.includes("new")).slice(0, 4);
   const onSale      = PRODUCTS.filter((p) => p.tags.includes("sale")).slice(0, 2);
-  const heroProducts = ["p4", "p8", "p7"].map((id) => getProductById(id)).filter(Boolean);
+  const heroProducts = ["p8", "p4", "p7"].map((id) => getProductById(id)).filter(Boolean);
   const heroColors = { p4: "#118E97", p8: "#CE2633", p7: "#F08224" };
 
   return `
@@ -124,16 +124,19 @@ export function renderHome() {
                 const hex = heroColors[product.id] || product.colors?.[0]?.hex || "#BBC1CA";
                 return `
                 <a class="hero-slide ${index === 0 ? "active" : ""}" data-hero-slide="${index}" data-shoe-color="${hex}" href="#/product/${product.id}" data-action="go-product" aria-label="عرض ${escapeHtml(product.name)}">
+                  <span class="hero-slide-backdrop-title" aria-hidden="true">${escapeHtml(product.brand)}</span>
                   <img class="floating-sneaker" src="${product.images[0] || HERO_IMAGE}" alt="${escapeHtml(product.name)}">
+                  <img class="shoe-reflection" src="${product.images[0] || HERO_IMAGE}" alt="" aria-hidden="true">
+                  <span class="hero-slide-copy" aria-hidden="true"><small>${escapeHtml(product.brand)} / STREET</small><strong>${escapeHtml(product.name)}</strong></span>
                 </a>`;
               }).join("")}
             </div>
             <div class="hero-carousel-controls" aria-label="التحكم بعروض السنيكرز">
-              <button type="button" class="carousel-btn" data-action="hero-prev" aria-label="السنيكرز السابق"><svg class="carousel-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 12H6"/><path d="m11 6-6 6 6 6"/></svg></button>
+              <button type="button" class="carousel-btn" data-action="hero-next" aria-label="السنيكرز التالي"><svg class="carousel-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12h12"/><path d="m13 6 6 6-6 6"/></svg></button>
               <div class="carousel-dots">
                 ${heroProducts.map((product, index) => `<button type="button" class="carousel-dot ${index === 0 ? "active" : ""}" data-action="hero-dot" data-index="${index}" aria-label="عرض ${index + 1}"></button>`).join("")}
               </div>
-              <button type="button" class="carousel-btn" data-action="hero-next" aria-label="السنيكرز التالي"><svg class="carousel-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12h12"/><path d="m13 6 6 6-6 6"/></svg></button>
+              <button type="button" class="carousel-btn" data-action="hero-prev" aria-label="السنيكرز السابق"><svg class="carousel-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 12H6"/><path d="m11 6-6 6 6 6"/></svg></button>
             </div>
           </div>
           <div class="hero-decor" aria-hidden="true">
@@ -142,7 +145,7 @@ export function renderHome() {
             <span class="decor-dot decor-dot-a"></span>
             <span class="decor-dot decor-dot-b"></span>
             <span class="decor-card decor-card-a"><b>${escapeHtml(heroProducts[1]?.brand || "KHALIL")}</b><small>STREET / 02</small></span>
-            <span class="decor-card decor-card-b"><b>01—03</b><small>SELECTED DROP</small></span>
+            <span class="decor-card decor-card-b"><b>PREMIUM AND</b><small>SLEEK DESIGN</small></span>
             ${heroProducts[1] ? `<img class="decor-shoe decor-shoe-a" src="${heroProducts[1].images[0]}" alt="">` : ""}
             ${onSale[0] ? `<img class="decor-shoe decor-shoe-b" src="${onSale[0].images[0]}" alt="">` : ""}
           </div>
