@@ -124,7 +124,7 @@ export function renderHome() {
                 const hex = heroColors[product.id] || product.colors?.[0]?.hex || "#BBC1CA";
                 return `
                 <a class="hero-slide ${index === 0 ? "active" : ""}" data-hero-slide="${index}" data-shoe-color="${hex}" href="#/product/${product.id}" data-action="go-product" aria-label="عرض ${escapeHtml(product.name)}">
-                  <span class="hero-slide-backdrop-title" aria-hidden="true">${escapeHtml(product.brand)}</span>
+                  <span class="hero-slide-backdrop-title" aria-hidden="true">${product.id === "p8" ? "ASICS" : escapeHtml(product.brand)}</span>
                   <img class="floating-sneaker" src="${product.images[0] || HERO_IMAGE}" alt="${escapeHtml(product.name)}">
                   <img class="shoe-reflection" src="${product.images[0] || HERO_IMAGE}" alt="" aria-hidden="true">
                   <span class="hero-slide-copy" aria-hidden="true"><small>${escapeHtml(product.brand)} / STREET</small><strong>${escapeHtml(product.name)}</strong></span>
@@ -146,6 +146,7 @@ export function renderHome() {
             <span class="decor-dot decor-dot-b"></span>
             <span class="decor-card decor-card-a"><b>${escapeHtml(heroProducts[1]?.brand || "KHALIL")}</b><small>STREET / 02</small></span>
             <span class="decor-card decor-card-b"><b>PREMIUM AND</b><small>SLEEK DESIGN</small></span>
+            <span class="decor-card decor-card-c"><b>EXTREME</b><small>COMFORT</small></span>
             ${heroProducts[1] ? `<img class="decor-shoe decor-shoe-a" src="${heroProducts[1].images[0]}" alt="">` : ""}
             ${onSale[0] ? `<img class="decor-shoe decor-shoe-b" src="${onSale[0].images[0]}" alt="">` : ""}
           </div>
