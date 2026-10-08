@@ -31,6 +31,10 @@ const app = document.getElementById("app");
 let shopFilters = { category: "", brand: "", sort: "featured", q: "", priceMax: 200 };
 let heroTimer = null;
 let heroIndex = 0;
+let heroTransitionTimer = null;
+const HERO_HOLD_MS = 3000;
+const HERO_TRANSITION_MS = 2000;
+const HERO_CYCLE_MS = HERO_HOLD_MS + HERO_TRANSITION_MS;
 let ambientPointerFrame = 0;
 let themeRippleTimer = null;
 let heroTouchStartX = null;
@@ -169,45 +173,81 @@ function setHeroSlide(nextIndex) {
   if (!slides.length) return;
   const next = (nextIndex + slides.length) % slides.length;
   if (next === heroIndex) return;
-  const forwardSteps = (next - heroIndex + slides.length) % slides.length;
-  const carousel = document.querySelector(".hero-carousel");
-  const direction = forwardSteps <= slides.length / 2 ? "forward" : "backward";
+  const heroSection = document.querySelector(".hero");
+  const stage = document.querySelector(".sneaker-stage");
   const outgoing = slides[heroIndex];
   const incoming = slides[next];
-  if (carousel) carousel.dataset.direction = direction;
+  heroSection?.classList.add("is-transitioning");
+  stage?.classList.add("is-transitioning");
+  clearTimeout(heroTransitionTimer);
+  slides.forEach((slide) => slide.classList.remove("is-entering", "is-exiting"));
   if (incoming) {
-    incoming.style.setProperty("--slide-x", direction === "forward" ? "54px" : "-54px");
+    incoming.classList.add("is-entering");
+    incoming.setAttribute("aria-hidden", "false");
+    incoming.removeAttribute("tabindex");
+    void incoming.offsetWidth;
+  }
+  if (outgoing) {
+    outgoing.classList.remove("active");
+    outgoing.classList.add("is-exiting");
+    outgoing.setAttribute("aria-hidden", "true");
+    outgoing.setAttribute("tabindex", "-1");
   }
   heroIndex = next;
-  slides.forEach((slide, index) => slide.classList.toggle("active", index === heroIndex));
+  if (incoming?.isConnected) {
+    incoming.classList.remove("is-entering");
+    incoming.classList.add("active");
+  }
   dots.forEach((dot, index) => dot.classList.toggle("active", index === heroIndex));
-  applyHeroTheme(slides[heroIndex]);
+  applyHeroTheme(incoming);
+  heroTransitionTimer = setTimeout(() => {
+    outgoing?.classList.remove("is-exiting");
+    incoming?.classList.remove("is-entering");
+    heroSection?.classList.remove("is-transitioning");
+    stage?.classList.remove("is-transitioning");
+  }, HERO_TRANSITION_MS);
+}
+
+function scheduleHeroAutoplay(delay = HERO_HOLD_MS) {
+  clearInterval(heroTimer);
+  clearTimeout(heroTimer);
+  heroTimer = setTimeout(() => {
+    setHeroSlide(heroIndex + 1);
+    heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), HERO_CYCLE_MS);
+  }, delay);
 }
 
 function startHeroCarousel() {
   clearInterval(heroTimer);
+  clearTimeout(heroTimer);
+  clearTimeout(heroTransitionTimer);
   heroIndex = 0;
-  setHeroSlide(heroIndex);
-  heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), 5200);
+  const slides = [...document.querySelectorAll("[data-hero-slide]")];
+  slides.forEach((slide, index) => {
+    slide.classList.remove("is-entering", "is-exiting");
+    slide.classList.toggle("active", index === heroIndex);
+    slide.setAttribute("aria-hidden", index === heroIndex ? "false" : "true");
+    if (index === heroIndex) slide.removeAttribute("tabindex");
+    else slide.setAttribute("tabindex", "-1");
+  });
+  scheduleHeroAutoplay();
   const stage = document.querySelector(".sneaker-stage");
   if (!stage) return;
   const firstSlide = stage.querySelector(`[data-hero-slide="${heroIndex}"]`);
   applyHeroTheme(firstSlide);
-  stage.addEventListener("mouseenter", () => clearInterval(heroTimer));
-  stage.addEventListener("mouseleave", () => {
-    clearInterval(heroTimer);
-    heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), 5200);
-  });
+  stage.addEventListener("mouseenter", () => { clearInterval(heroTimer); clearTimeout(heroTimer); });
+  stage.addEventListener("mouseleave", () => scheduleHeroAutoplay());
   stage.addEventListener("touchstart", (event) => {
     heroTouchStartX = event.changedTouches[0]?.clientX ?? null;
     clearInterval(heroTimer);
+    clearTimeout(heroTimer);
   }, { passive: true });
   stage.addEventListener("touchend", (event) => {
     if (heroTouchStartX === null) return;
     const delta = (event.changedTouches[0]?.clientX ?? heroTouchStartX) - heroTouchStartX;
     if (Math.abs(delta) > 42) setHeroSlide(heroIndex + (delta < 0 ? 1 : -1));
     heroTouchStartX = null;
-    heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), 5200);
+    scheduleHeroAutoplay();
   }, { passive: true });
 }
 
