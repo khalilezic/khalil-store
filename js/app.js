@@ -174,14 +174,44 @@ function setHeroSlide(nextIndex) {
   const direction = forwardSteps <= slides.length / 2 ? "forward" : "backward";
   const outgoing = slides[heroIndex];
   const incoming = slides[next];
+  const gsap = window.gsap;
+  const animate = Boolean(gsap && !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const sign = direction === "forward" ? 1 : -1;
+  const incomingShoe = incoming?.querySelector(".floating-sneaker");
+  const outgoingShoe = outgoing?.querySelector(".floating-sneaker");
+  const incomingCopy = incoming?.querySelector(".hero-slide-copy");
+  const outgoingCopy = outgoing?.querySelector(".hero-slide-copy");
+  if (animate) {
+    gsap.killTweensOf([outgoing, incoming, outgoingShoe, incomingShoe, outgoingCopy, incomingCopy]);
+    gsap.set(outgoing, { visibility: "visible" });
+    gsap.set(incoming, { autoAlpha: 0, x: sign * 76, scale: .975, rotate: -sign * 1.6 });
+    gsap.set(incomingShoe, { y: 14, scale: .9, rotate: -sign * 2, animation: "none", transformOrigin: "50% 55%" });
+    gsap.set(incomingCopy, { autoAlpha: 0, y: 14 });
+  }
   if (carousel) carousel.dataset.direction = direction;
-  if (incoming) {
+  if (incoming && !animate) {
     incoming.style.setProperty("--slide-x", direction === "forward" ? "54px" : "-54px");
   }
   heroIndex = next;
   slides.forEach((slide, index) => slide.classList.toggle("active", index === heroIndex));
   dots.forEach((dot, index) => dot.classList.toggle("active", index === heroIndex));
-  applyHeroTheme(slides[heroIndex]);
+  if (animate) {
+    const root = document.documentElement;
+    root.classList.add("gsap-theme-snap");
+    applyHeroTheme(slides[heroIndex]);
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("gsap-theme-snap")));
+  } else {
+    applyHeroTheme(slides[heroIndex]);
+  }
+  if (animate) {
+    const transition = gsap.timeline({ defaults: { overwrite: "auto" } });
+    transition.to(outgoing, { autoAlpha: 0, x: -sign * 64, scale: .985, rotate: sign * 1.2, duration: .62, ease: "power2.inOut" }, 0)
+      .to(outgoingShoe, { y: -8, scale: .94, rotate: sign * 1.5, duration: .62, ease: "power2.inOut" }, 0)
+      .to(outgoingCopy, { autoAlpha: 0, y: -8, duration: .32, ease: "power2.in" }, 0)
+      .to(incoming, { autoAlpha: 1, x: 0, scale: 1, rotate: 0, duration: .82, ease: "power3.out" }, .03)
+      .to(incomingShoe, { y: 0, scale: 1, rotate: 0, duration: .88, ease: "power3.out" }, .06)
+      .to(incomingCopy, { autoAlpha: 1, y: 0, duration: .48, ease: "power3.out" }, .24);
+  }
 }
 
 function startHeroCarousel() {
@@ -214,6 +244,10 @@ function startHeroCarousel() {
 function observeProductCards() {
   const cards = [...document.querySelectorAll(".product-card")];
   if (!cards.length) return;
+  if (window.gsap && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    cards.forEach((card) => card.classList.remove("reveal-ready", "is-visible"));
+    return;
+  }
   cards.forEach((card) => card.classList.add("reveal-ready"));
   if (!("IntersectionObserver" in window)) {
     cards.forEach((card) => card.classList.add("is-visible"));
@@ -227,6 +261,31 @@ function observeProductCards() {
     });
   }, { threshold: 0.16, rootMargin: "0px 0px -8% 0px" });
   cards.forEach((card) => observer.observe(card));
+}
+
+/* GSAP scroll storytelling, with graceful fallback and reduced-motion support. */
+function initGSAPAnimations() {
+  const gsap = window.gsap;
+  const ScrollTrigger = window.ScrollTrigger;
+  if (!gsap || !ScrollTrigger || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  gsap.registerPlugin(ScrollTrigger);
+  document.body.classList.add("gsap-ready");
+  const home = document.body.classList.contains("home-theme");
+  gsap.fromTo(".site-header", { y: -22, opacity: 0 }, { y: 0, opacity: 1, duration: .75, ease: "power3.out", clearProps: "transform" });
+
+  if (home) {
+    const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
+    intro.fromTo(".hero-topline", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: .65 })
+      .fromTo(".hero-copy-kicker, .hero-copy h1, .hero-copy > p", { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: .72, stagger: .12 }, "-=.35")
+      .fromTo(".hero-copy .hero-cta", { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: .65 }, "-=.4")
+      .fromTo(".hero-media", { scale: .88, opacity: 0, rotate: -3 }, { scale: 1, opacity: 1, rotate: 0, duration: 1.1 }, "-=.65")
+      .fromTo(".hero-decor > *", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .7, stagger: .08 }, "-=.65");
+  }
+
+  gsap.utils.toArray(".section-head, .cat-card, .promo-banner, .product-card, .brand-strip li").forEach((item, index) => {
+    gsap.fromTo(item, { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: .72, delay: (index % 4) * .055, ease: "power3.out", scrollTrigger: { trigger: item, start: "top 91%", once: true } });
+  });
+  ScrollTrigger.refresh();
 }
 
 /* ============================================================
@@ -256,6 +315,7 @@ function renderFavoritesPage() {
 }
 
 function router() {
+  if (window.ScrollTrigger) window.ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
   const { path, query } = parseHash();
   document.body.classList.add("site-theme");
   document.body.classList.toggle("home-theme", path === "/");
@@ -295,6 +355,7 @@ function router() {
   updateBadges();
   closeMobileMenu();
   requestAnimationFrame(observeProductCards);
+  requestAnimationFrame(initGSAPAnimations);
 }
 
 window.addEventListener("hashchange", router);

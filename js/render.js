@@ -111,8 +111,12 @@ export function renderHome() {
           <span class="hero-topline-tag">THE COMFORT OF LIFE</span>
         </div>
         <div class="hero-copy">
+          <span class="hero-copy-kicker">KHALIL SELECT / 2026</span>
+          <h1>خطوتك القادمة<br><span>تبدأ من هنا.</span></h1>
+          <p>أحذية مختارة بعناية تجمع بين الأداء والستايل. اكتشف الإصدار الذي يشبهك.</p>
           <div class="hero-cta">
             <a href="#/shop" class="btn btn-primary" data-action="go-link">اشتر الآن</a>
+            <span class="hero-copy-note">شحن سريع · أصالة مضمونة</span>
           </div>
         </div>
         <div class="hero-media">
@@ -124,6 +128,7 @@ export function renderHome() {
                 const hex = heroColors[product.id] || product.colors?.[0]?.hex || "#BBC1CA";
                 return `
                 <a class="hero-slide ${index === 0 ? "active" : ""}" data-hero-slide="${index}" data-shoe-color="${hex}" href="#/product/${product.id}" data-action="go-product" aria-label="عرض ${escapeHtml(product.name)}">
+                  <span class="hero-slide-copy"><small>SELECTED SNEAKER / 0${index + 1}</small><strong>${escapeHtml(product.name)}</strong><em>${formatPrice(product.price)}</em></span>
                   <img class="floating-sneaker" src="${product.images[0] || HERO_IMAGE}" alt="${escapeHtml(product.name)}">
                 </a>`;
               }).join("")}
