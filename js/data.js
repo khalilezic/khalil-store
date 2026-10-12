@@ -44,6 +44,17 @@ const IMG = {
 export const HERO_IMAGE = IMG.hero;
 export const LOGO_IMAGE = IMG.logo;
 
+/**
+ * Curated line-ups (product ids, in the order they appear on screen).
+ *
+ * HERO_LINEUP   → the three sneakers that rotate in the hero carousel.
+ * STAGE_LINEUP  → the three sneakers of the scroll-driven showcase scene
+ *                 (see js/stage.js). Their colours drive the scene lighting,
+ *                 so they are picked for contrast: silver → hot red → graphite.
+ */
+export const HERO_LINEUP = ["p4", "p8", "p7"];
+export const STAGE_LINEUP = ["p1", "p8", "p10"];
+
 /** Adult EU sizing grid (climbing down to kids). */
 const SIZES_ADULT = [38, 39, 40, 41, 42, 43, 44, 45];
 const SIZES_KIDS  = [28, 29, 30, 31, 32, 33];

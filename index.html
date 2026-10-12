@@ -16,12 +16,26 @@
       • Learn Up's high-contrast monochrome copy / line-art accents
     All Arabic strings, RTL layout, products, routes and interactions preserved.
   -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Cairo:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/cairo-arabic-wght-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/cairo-latin-wght-normal.woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/style.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <!--
+    Motion capability flag. Written before the first paint so the cinematic
+    stage layout is only ever used when the visitor is fine with motion
+    (and has JavaScript). Everything falls back to the static layout.
+  -->
+  <script>
+    (function () {
+      var reduce = false;
+      try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { /* assume motion is fine */ }
+      document.documentElement.dataset.motion = reduce ? "reduce" : "full";
+    })();
+  </script>
+  <!-- GSAP + ScrollTrigger ship with the project (js/vendor) so the storefront
+       runs fully offline, with no third-party request on first load. -->
+  <script defer src="js/vendor/gsap.min.js"></script>
+  <script defer src="js/vendor/ScrollTrigger.min.js"></script>
 </head>
 <body>
 

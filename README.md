@@ -105,3 +105,37 @@ GitHub Pages — all of them serve it correctly as-is.
 - **Product images** → the `IMG` map at the top of `data.js` is the
   only place image URLs live; swap in real photography here and
   every product automatically updates.
+
+---
+
+## v3 — cinematic scroll showcase
+
+The storefront keeps every page, route and interaction of v2 and adds one
+scroll-driven scene on the home page (`js/stage.js` + the `CINEMATIC SCROLL
+SHOWCASE` block in `css/style.css`):
+
+- three catalogue sneakers share one sticky stage; scrolling walks the line-up,
+  steps one shoe into the middle and lets the others recede and dim;
+- the scene light crossfades to the tone of the sneaker on stage (hue taken from
+  `product.colors[0].hex`, clamped by `accentTone()` so white/black shoes still
+  read as light);
+- that shoe's real feature callouts (`product.specs`) plus brand, category,
+  price, rating and sizes assemble around it, then hand over to the next one;
+- a product rail under the stage mirrors the chapters and jumps between them;
+- the hero slides themselves now leave as a three-layer camera move (scene,
+  shoe, information) with a 0.12s overlap instead of a flat crossfade.
+
+Implementation notes that keep it honest:
+
+- **No invented assets** — only the existing `assets/*-transparent.png`
+  photography and `js/data.js` copy; no burger/drink imagery, no 3D claims.
+- **Cheap by design** — transform/opacity only, one ScrollTrigger for the whole
+  scene (`scrub`), grouped reveal triggers elsewhere, no pinning (CSS
+  `position: sticky` does the hold), and per-route cleanup of every trigger,
+  tween and inline style.
+- **Reduced motion** — `prefers-reduced-motion: reduce` renders the same section
+  as a plain stacked layout (`[data-stage-mode="static"]`), and the hero falls
+  back to a CSS crossfade.
+- **Self-contained runtime** — GSAP 3.12.5 (`js/vendor/`) and Cairo /
+  Barlow Condensed (`assets/fonts/`, OFL) are served from the repo, so the store
+  has no third-party CDN dependency.

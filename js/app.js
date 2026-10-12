@@ -22,7 +22,8 @@ import {
   toggleFavorite, favoriteCount, clearCart
 } from "./store.js";
 import { getProductById } from "./data.js";
-import { parseQuery, buildQuery, debounce, randomOrderNumber } from "./utils.js";
+import { initStageCinema } from "./stage.js";
+import { parseQuery, buildQuery, debounce, randomOrderNumber, prefersReducedMotion } from "./utils.js";
 
 const app = document.getElementById("app");
 
@@ -34,6 +35,13 @@ let heroIndex = 0;
 let ambientPointerFrame = 0;
 let themeRippleTimer = null;
 let heroTouchStartX = null;
+
+/* Motion bookkeeping: one GSAP context per route keeps scroll triggers and
+   inline styles from leaking into the next page. */
+let gsapContext = null;
+let stageController = null;
+let heroCleanupTimer = null;
+const hasMotion = () => Boolean(window.gsap) && !prefersReducedMotion();
 
 const isSmallScreen = () => window.matchMedia("(max-width: 700px)").matches;
 const isLowPerformanceDevice = () => {
@@ -163,39 +171,81 @@ function applyHeroTheme(slide) {
   }
 }
 
+/** Anything that is not the live slide goes back to its pure CSS state. */
+function resetHeroOffstageSlides() {
+  const gsap = window.gsap;
+  if (!gsap) return;
+  document.querySelectorAll("[data-hero-slide]").forEach((slide) => {
+    if (slide.classList.contains("active")) return;
+    gsap.set([slide, slide.querySelector(".floating-sneaker"), slide.querySelector(".hero-slide-copy")], { clearProps: "all" });
+  });
+}
+
+/* ============================================================
+   HERO SLIDE TRANSITION  (cinematic hand-off)
+   ------------------------------------------------------------
+   Three layers travel at different speeds and depths so the swap
+   reads as one camera move instead of a flat crossfade:
+
+     scene  (slide)   leaves slowly, slight scale + counter-rotation
+     shoe             drifts the opposite way, staying perfectly sharp
+     copy             exits first, lands last → follows the product
+
+   Timing is balanced around a single clip: out 0.60s, in 0.86s with a
+   0.12s overlap, so the stage never feels empty and never double-exposes.
+   ============================================================ */
 function setHeroSlide(nextIndex) {
   const slides = [...document.querySelectorAll("[data-hero-slide]")];
   const dots = [...document.querySelectorAll(".carousel-dot")];
   if (!slides.length) return;
   const next = (nextIndex + slides.length) % slides.length;
   if (next === heroIndex) return;
+
   const forwardSteps = (next - heroIndex + slides.length) % slides.length;
   const carousel = document.querySelector(".hero-carousel");
   const direction = forwardSteps <= slides.length / 2 ? "forward" : "backward";
+  const sign = direction === "forward" ? 1 : -1;
+  const gsap = window.gsap;
+  const animate = hasMotion();
   const outgoing = slides[heroIndex];
   const incoming = slides[next];
-  const gsap = window.gsap;
-  const animate = Boolean(gsap && !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  const sign = direction === "forward" ? 1 : -1;
-  const incomingShoe = incoming?.querySelector(".floating-sneaker");
-  const outgoingShoe = outgoing?.querySelector(".floating-sneaker");
-  const incomingCopy = incoming?.querySelector(".hero-slide-copy");
-  const outgoingCopy = outgoing?.querySelector(".hero-slide-copy");
+  const layerOf = (slide) => (slide ? {
+    shoe: slide.querySelector(".floating-sneaker"),
+    copy: slide.querySelector(".hero-slide-copy")
+  } : { shoe: null, copy: null });
+  const from = layerOf(outgoing);
+  const to = layerOf(incoming);
+
   if (animate) {
-    gsap.killTweensOf([outgoing, incoming, outgoingShoe, incomingShoe, outgoingCopy, incomingCopy]);
-    gsap.set(outgoing, { visibility: "visible" });
-    gsap.set(incoming, { autoAlpha: 0, x: sign * 76, scale: .975, rotate: -sign * 1.6 });
-    gsap.set(incomingShoe, { y: 14, scale: .9, rotate: -sign * 2, animation: "none", transformOrigin: "50% 55%" });
-    gsap.set(incomingCopy, { autoAlpha: 0, y: 14 });
+    // A slide-in can be interrupted (fast clicks, autoplay). Every slide is
+    // reset to its CSS state first, so an interrupted hand-off can never leave
+    // two sneakers on stage at once.
+    slides.forEach((slide) => {
+      const layer = layerOf(slide);
+      gsap.killTweensOf([slide, layer.shoe, layer.copy]);
+      gsap.set([slide, layer.shoe, layer.copy], { clearProps: "all" });
+    });
+    // Pin the outgoing scene in its "on stage" state before the class swap,
+    // otherwise its CSS state (hidden) would swallow the exit animation.
+    gsap.set(outgoing, { autoAlpha: 1, xPercent: 0, scale: 1, rotate: 0, visibility: "visible" });
+    gsap.set(from.shoe, { x: 0, y: 0, scale: 1, rotate: 0 });
+    gsap.set(from.copy, { autoAlpha: 1, xPercent: 0, y: 0, rotation: -7 });
+    gsap.set(incoming, { autoAlpha: 0, xPercent: sign * 9, scale: 1.05, rotate: -sign * 1.7, visibility: "visible" });
+    gsap.set(to.shoe, { xPercent: sign * 4, y: 46, scale: .86, rotate: -sign * 3, transformOrigin: "50% 58%" });
+    gsap.set(to.copy, { autoAlpha: 0, xPercent: sign * 14, y: 22, rotation: -7 });
   }
+
   if (carousel) carousel.dataset.direction = direction;
   if (incoming && !animate) {
     incoming.style.setProperty("--slide-x", direction === "forward" ? "54px" : "-54px");
   }
+
   heroIndex = next;
   slides.forEach((slide, index) => slide.classList.toggle("active", index === heroIndex));
   dots.forEach((dot, index) => dot.classList.toggle("active", index === heroIndex));
+
   if (animate) {
+    // Colour wash flips with the shoe; the snap class keeps it from lagging the scene.
     const root = document.documentElement;
     root.classList.add("gsap-theme-snap");
     applyHeroTheme(slides[heroIndex]);
@@ -203,31 +253,62 @@ function setHeroSlide(nextIndex) {
   } else {
     applyHeroTheme(slides[heroIndex]);
   }
-  if (animate) {
-    const transition = gsap.timeline({ defaults: { overwrite: "auto" } });
-    transition.to(outgoing, { autoAlpha: 0, x: -sign * 64, scale: .985, rotate: sign * 1.2, duration: .62, ease: "power2.inOut" }, 0)
-      .to(outgoingShoe, { y: -8, scale: .94, rotate: sign * 1.5, duration: .62, ease: "power2.inOut" }, 0)
-      .to(outgoingCopy, { autoAlpha: 0, y: -8, duration: .32, ease: "power2.in" }, 0)
-      .to(incoming, { autoAlpha: 1, x: 0, scale: 1, rotate: 0, duration: .82, ease: "power3.out" }, .03)
-      .to(incomingShoe, { y: 0, scale: 1, rotate: 0, duration: .88, ease: "power3.out" }, .06)
-      .to(incomingCopy, { autoAlpha: 1, y: 0, duration: .48, ease: "power3.out" }, .24);
-  }
+
+  if (!animate) return;
+
+  const decor = document.querySelector(".hero-decor");
+  clearTimeout(heroCleanupTimer);
+  heroCleanupTimer = setTimeout(() => resetHeroOffstageSlides(), 1150);
+  gsap.timeline({
+    defaults: { overwrite: "auto" },
+    onComplete: () => gsap.set([outgoing, from.shoe, from.copy], { clearProps: "transform,opacity,visibility" })
+  })
+    // ---- exit: the whole scene (not just the picture) leaves ----
+    .to(outgoing, { autoAlpha: 0, xPercent: -sign * 7, scale: .955, rotate: sign * 1.4, duration: .6, ease: "power2.in" }, 0)
+    .to(from.shoe, { xPercent: -sign * 5, y: -34, scale: .93, rotate: sign * 2, duration: .6, ease: "power2.in" }, 0)
+    .to(from.copy, { autoAlpha: 0, y: -16, duration: .3, ease: "power1.in" }, 0)
+    // ---- enter: shoe first, information follows ----
+    .to(incoming, { autoAlpha: 1, xPercent: 0, scale: 1, rotate: 0, duration: .86, ease: "power3.out" }, .12)
+    .to(to.shoe, { xPercent: 0, y: 0, scale: 1, rotate: 0, duration: .92, ease: "power3.out" }, .14)
+    .to(to.copy, { autoAlpha: 1, xPercent: 0, y: 0, rotation: -7, duration: .5, ease: "power3.out" }, .34)
+    // depth cue: the decorative layer drifts the other way
+    .to(decor, { xPercent: sign * 2.5, duration: .9, ease: "power2.inOut" }, 0)
+    .to(decor, { xPercent: 0, duration: .6, ease: "power2.out" }, .5);
+}
+
+/* The hero owns the storefront colour while it is on screen. Once it scrolls
+   away the showcase (or any other section) takes over, so the autoplay must not
+   keep repainting --site-color — and an off-screen carousel costs nothing. */
+let heroInView = true;
+function setHeroAutoplay(on) {
+  clearInterval(heroTimer);
+  heroTimer = null;
+  if (on && heroInView) heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), 5200);
 }
 
 function startHeroCarousel() {
   clearInterval(heroTimer);
   heroIndex = 0;
   setHeroSlide(heroIndex);
-  heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), 5200);
+  const heroSection = document.querySelector(".hero");
   const stage = document.querySelector(".sneaker-stage");
   if (!stage) return;
   const firstSlide = stage.querySelector(`[data-hero-slide="${heroIndex}"]`);
   applyHeroTheme(firstSlide);
-  stage.addEventListener("mouseenter", () => clearInterval(heroTimer));
-  stage.addEventListener("mouseleave", () => {
-    clearInterval(heroTimer);
-    heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), 5200);
-  });
+
+  heroInView = true;
+  setHeroAutoplay(true);
+
+  if (heroSection && "IntersectionObserver" in window) {
+    const heroWatcher = new IntersectionObserver((entries) => {
+      heroInView = entries[0].isIntersecting;
+      setHeroAutoplay(heroInView);
+    }, { threshold: .12 });
+    heroWatcher.observe(heroSection);
+  }
+
+  stage.addEventListener("mouseenter", () => setHeroAutoplay(false));
+  stage.addEventListener("mouseleave", () => setHeroAutoplay(true));
   stage.addEventListener("touchstart", (event) => {
     heroTouchStartX = event.changedTouches[0]?.clientX ?? null;
     clearInterval(heroTimer);
@@ -237,7 +318,7 @@ function startHeroCarousel() {
     const delta = (event.changedTouches[0]?.clientX ?? heroTouchStartX) - heroTouchStartX;
     if (Math.abs(delta) > 42) setHeroSlide(heroIndex + (delta < 0 ? 1 : -1));
     heroTouchStartX = null;
-    heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), 5200);
+    setHeroAutoplay(true);
   }, { passive: true });
 }
 
@@ -263,29 +344,79 @@ function observeProductCards() {
   cards.forEach((card) => observer.observe(card));
 }
 
-/* GSAP scroll storytelling, with graceful fallback and reduced-motion support. */
+/* ============================================================
+   GSAP SCROLL STORYTELLING
+   ------------------------------------------------------------
+   Kept deliberately lean for phones and low-power laptops:
+     · one gsap.context per route → everything is reverted on navigation
+     · one ScrollTrigger per *group* (grid / head / banner) instead of
+       one per card, so the home page runs a handful of triggers
+     · only transform + opacity are animated
+   ============================================================ */
 function initGSAPAnimations() {
   const gsap = window.gsap;
   const ScrollTrigger = window.ScrollTrigger;
-  if (!gsap || !ScrollTrigger || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!gsap || !ScrollTrigger) return;
+  if (prefersReducedMotion()) {
+    document.body.classList.remove("gsap-ready");
+    return;
+  }
   gsap.registerPlugin(ScrollTrigger);
   document.body.classList.add("gsap-ready");
-  const home = document.body.classList.contains("home-theme");
-  gsap.fromTo(".site-header", { y: -22, opacity: 0 }, { y: 0, opacity: 1, duration: .75, ease: "power3.out", clearProps: "transform" });
 
-  if (home) {
-    const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
-    intro.fromTo(".hero-topline", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: .65 })
-      .fromTo(".hero-copy-kicker, .hero-copy h1, .hero-copy > p", { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: .72, stagger: .12 }, "-=.35")
-      .fromTo(".hero-copy .hero-cta", { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: .65 }, "-=.4")
-      .fromTo(".hero-media", { scale: .88, opacity: 0, rotate: -3 }, { scale: 1, opacity: 1, rotate: 0, duration: 1.1 }, "-=.65")
-      .fromTo(".hero-decor > *", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .7, stagger: .08 }, "-=.65");
-  }
+  gsapContext?.revert();
+  gsapContext = gsap.context(() => {
+    const home = document.body.classList.contains("home-theme");
+    const productPage = location.hash.startsWith("#/product/");
 
-  gsap.utils.toArray(".section-head, .cat-card, .promo-banner, .product-card, .brand-strip li").forEach((item, index) => {
-    gsap.fromTo(item, { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: .72, delay: (index % 4) * .055, ease: "power3.out", scrollTrigger: { trigger: item, start: "top 91%", once: true } });
+    gsap.fromTo(".site-header", { y: -22, opacity: 0 }, { y: 0, opacity: 1, duration: .75, ease: "power3.out", clearProps: "transform" });
+
+    if (home) {
+      const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
+      intro.fromTo(".hero-topline", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: .65 })
+        .fromTo(".hero-copy-kicker, .hero-copy h1, .hero-copy > p", { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: .72, stagger: .12 }, "-=.35")
+        .fromTo(".hero-copy .hero-cta", { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: .65 }, "-=.4")
+        .fromTo(".hero-media", { scale: .88, opacity: 0, rotate: -3 }, { scale: 1, opacity: 1, rotate: 0, duration: 1.1 }, "-=.65");
+      // The scroll showcase (its own ScrollTrigger lives in js/stage.js).
+      stageController = initStageCinema(document.querySelector("[data-showcase]"));
+    }
+
+    if (productPage) {
+      // The product page "assembles" itself the same way the stage does:
+      // gallery first, then the info column, then the detail rows.
+      gsap.fromTo(".pdp-gallery-main img", { scale: 1.06, opacity: 0 }, { scale: 1, opacity: 1, duration: .9, ease: "power3.out" });
+      gsap.fromTo(".pdp-info > *", { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: .6, stagger: .055, ease: "power3.out" });
+      const detailRows = gsap.utils.toArray(".tab-panel.active li, .pdp-perks .perk, .related-wrap .product-card");
+      if (detailRows.length) {
+        gsap.fromTo(detailRows, { y: 20, opacity: 0 }, {
+          y: 0, opacity: 1, duration: .55, stagger: .06, ease: "power2.out",
+          scrollTrigger: { trigger: ".tabs", start: "top 92%", once: true }
+        });
+      }
+    }
+
+    revealGroup(gsap, ".section-head", ".section-head", 0);
+    revealGroup(gsap, ".cat-grid", ".cat-card", .05);
+    revealGroup(gsap, ".product-grid", ".product-card", .06);
+    revealGroup(gsap, ".brand-strip ul", "li", .05);
+    revealGroup(gsap, ".promo-banner", ".promo-banner", 0);
+
+    ScrollTrigger.refresh();
+  }, document.body);
+}
+
+/** One trigger per group: fade + rise the children of `rootSelector` together. */
+function revealGroup(gsap, rootSelector, childSelector, stagger) {
+  gsap.utils.toArray(rootSelector).forEach((root) => {
+    const targets = root.matches(childSelector)
+      ? [root]
+      : gsap.utils.toArray(childSelector, root);
+    if (!targets.length) return;
+    gsap.fromTo(targets, { y: 32, opacity: 0 }, {
+      y: 0, opacity: 1, duration: .7, ease: "power3.out", stagger,
+      scrollTrigger: { trigger: root, start: "top 90%", once: true }
+    });
   });
-  ScrollTrigger.refresh();
 }
 
 /* ============================================================
@@ -315,7 +446,19 @@ function renderFavoritesPage() {
 }
 
 function router() {
+  // Leave no motion behind: kill scroll triggers, the showcase controller and
+  // every inline style the previous page's context wrote.
   if (window.ScrollTrigger) window.ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+  stageController?.destroy();
+  stageController = null;
+  gsapContext?.revert();
+  gsapContext = null;
+  document.body.classList.remove("gsap-ready");
+  clearInterval(heroTimer);
+  clearTimeout(heroCleanupTimer);
+  heroTimer = null;
+  heroCleanupTimer = null;
+
   const { path, query } = parseHash();
   document.body.classList.add("site-theme");
   document.body.classList.toggle("home-theme", path === "/");
@@ -364,6 +507,11 @@ window.addEventListener("DOMContentLoaded", () => {
   updateBadges();
 });
 
+// Fonts and hero/stage art can change the measured page height: re-measure once
+// they arrive so the scrubbed scene stays aligned with the scrollbar.
+window.addEventListener("load", () => window.ScrollTrigger?.refresh());
+if (document.fonts?.ready) document.fonts.ready.then(() => window.ScrollTrigger?.refresh());
+
 /* ============================================================
    CHECKOUT FORM
    Re-wired after every render since the form DOM nodes are
@@ -406,16 +554,25 @@ document.addEventListener("click", (e) => {
     case "hero-next": {
       e.preventDefault();
       setHeroSlide(heroIndex + 1);
+      setHeroAutoplay(true); // restart the dwell time after a manual jump
       break;
     }
     case "hero-prev": {
       e.preventDefault();
       setHeroSlide(heroIndex - 1);
+      setHeroAutoplay(true);
       break;
     }
     case "hero-dot": {
       e.preventDefault();
       setHeroSlide(Number(el.dataset.index));
+      setHeroAutoplay(true);
+      break;
+    }
+    case "stage-goto": {
+      // Scroll-showcase rail: glide to that chapter's part of the timeline.
+      e.preventDefault();
+      stageController?.goTo(Number(el.dataset.index) || 0);
       break;
     }
 
