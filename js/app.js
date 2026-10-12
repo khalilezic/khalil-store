@@ -23,6 +23,7 @@ import {
 } from "./store.js";
 import { getProductById } from "./data.js";
 import { initStageCinema } from "./stage.js";
+import { initScene } from "./scene.js";
 import { parseQuery, buildQuery, debounce, randomOrderNumber, prefersReducedMotion } from "./utils.js";
 
 const app = document.getElementById("app");
@@ -372,13 +373,8 @@ function initGSAPAnimations() {
     gsap.fromTo(".site-header", { y: -22, opacity: 0 }, { y: 0, opacity: 1, duration: .75, ease: "power3.out", clearProps: "transform" });
 
     if (home) {
-      const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
-      intro.fromTo(".hero-topline", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: .65 })
-        .fromTo(".hero-copy-kicker, .hero-copy h1, .hero-copy > p", { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: .72, stagger: .12 }, "-=.35")
-        .fromTo(".hero-copy .hero-cta", { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: .65 }, "-=.4")
-        .fromTo(".hero-media", { scale: .88, opacity: 0, rotate: -3 }, { scale: 1, opacity: 1, rotate: 0, duration: 1.1 }, "-=.65");
-      // The scroll showcase (its own ScrollTrigger lives in js/stage.js).
-      stageController = initStageCinema(document.querySelector("[data-showcase]"));
+      // Ciro-style scroll scene (js/scene.js) — drives its own rAF loop.
+      stageController = initScene(document.querySelector("[data-cx]"));
     }
 
     if (productPage) {

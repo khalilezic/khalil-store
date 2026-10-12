@@ -101,65 +101,11 @@ export function renderHome() {
   const bestsellers = PRODUCTS.filter((p) => p.tags.includes("bestseller")).slice(0, 4);
   const newArrivals = PRODUCTS.filter((p) => p.tags.includes("new")).slice(0, 4);
   const onSale      = PRODUCTS.filter((p) => p.tags.includes("sale")).slice(0, 2);
-  const heroProducts = HERO_LINEUP.map((id) => getProductById(id)).filter(Boolean);
-  const heroColors = { p4: "#118E97", p8: "#CE2633", p7: "#F08224" };
 
   return `
-    <!-- HERO --------------------------------------------------------- -->
-    <section class="hero">
-      <div class="container">
-        <div class="hero-topline" aria-label="khalil store">
-          <span class="hero-topline-mark">K</span>
-          <span class="hero-topline-name">khalil store</span>
-          <span class="hero-topline-tag">THE COMFORT OF LIFE</span>
-        </div>
-        <div class="hero-copy">
-          <span class="hero-copy-kicker">KHALIL SELECT / 2026</span>
-          <h1>خطوتك القادمة<br><span>تبدأ من هنا.</span></h1>
-          <p>أحذية مختارة بعناية تجمع بين الأداء والستايل. اكتشف الإصدار الذي يشبهك.</p>
-          <div class="hero-cta">
-            <a href="#/shop" class="btn btn-primary" data-action="go-link">اشتر الآن</a>
-            <span class="hero-copy-note">شحن سريع · أصالة مضمونة</span>
-          </div>
-        </div>
-        <div class="hero-media">
-          <div class="layer-back"></div>
-          <div class="layer-mid"></div>
-          <div class="sneaker-stage">
-            <div class="hero-carousel" aria-live="polite">
-              ${heroProducts.map((product, index) => {
-                const hex = heroColors[product.id] || product.colors?.[0]?.hex || "#BBC1CA";
-                return `
-                <a class="hero-slide ${index === 0 ? "active" : ""}" data-hero-slide="${index}" data-shoe-color="${hex}" href="#/product/${product.id}" data-action="go-product" aria-label="عرض ${escapeHtml(product.name)}">
-                  <span class="hero-slide-copy"><small>SELECTED SNEAKER / 0${index + 1}</small><strong>${escapeHtml(product.name)}</strong><em>${formatPrice(product.price)}</em></span>
-                  <img class="floating-sneaker" src="${product.images[0] || HERO_IMAGE}" alt="${escapeHtml(product.name)}">
-                </a>`;
-              }).join("")}
-            </div>
-            <div class="hero-carousel-controls" aria-label="التحكم بعروض السنيكرز">
-              <button type="button" class="carousel-btn" data-action="hero-prev" aria-label="السنيكرز السابق"><svg class="carousel-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 12H6"/><path d="m11 6-6 6 6 6"/></svg></button>
-              <div class="carousel-dots">
-                ${heroProducts.map((product, index) => `<button type="button" class="carousel-dot ${index === 0 ? "active" : ""}" data-action="hero-dot" data-index="${index}" aria-label="عرض ${index + 1}"></button>`).join("")}
-              </div>
-              <button type="button" class="carousel-btn" data-action="hero-next" aria-label="السنيكرز التالي"><svg class="carousel-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12h12"/><path d="m13 6 6 6-6 6"/></svg></button>
-            </div>
-          </div>
-          <div class="hero-decor" aria-hidden="true">
-            <span class="decor-line decor-line-a"></span>
-            <span class="decor-line decor-line-b"></span>
-            <span class="decor-dot decor-dot-a"></span>
-            <span class="decor-dot decor-dot-b"></span>
-            <span class="decor-card decor-card-a"><b>${escapeHtml(heroProducts[1]?.brand || "KHALIL")}</b><small>STREET / 02</small></span>
-            <span class="decor-card decor-card-b"><b>01—03</b><small>SELECTED DROP</small></span>
-            ${heroProducts[1] ? `<img class="decor-shoe decor-shoe-a" src="${heroProducts[1].images[0]}" alt="">` : ""}
-            ${onSale[0] ? `<img class="decor-shoe decor-shoe-b" src="${onSale[0].images[0]}" alt="">` : ""}
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CINEMATIC SCROLL SHOWCASE ------------------------------------ -->
-    ${renderShowcase()}
+    <!-- SCROLL SCENE + LINEUP + FAQ ------------------------------- -->
+    ${renderScene()}
+    ${renderLineupFaq()}
 
     <!-- BRAND STRIP -------------------------------------------------- -->
     <section class="brand-strip">
@@ -897,4 +843,107 @@ export function renderNotFound() {
       </div>
     </div>
   `;
+}
+
+
+/* ============================================================
+   SCROLL SCENE (Ciro-style) — see js/scene.js for the choreography.
+   Tones are hand-picked saturated hues so every shoe gets its own
+   "stage light", like each flavour on the reference site.
+   ============================================================ */
+const SCENE_SHOES = [
+  ["p4",  "#14B8C4"], ["p8",  "#E5303F"], ["p7",  "#FF8A2A"],
+  ["p1",  "#5B6CFF"], ["p2",  "#8B45FF"], ["p3",  "#D9B26F"],
+  ["p9",  "#2F6BFF"], ["p10", "#7C3AED"], ["p6",  "#38BDF8"]
+];
+const CHAPTER_BLURBS = [
+  "تفصيل مدروس لراحة تدوم طوال اليوم.",
+  "مواد مختارة بعناية لتتحمّل كل خطوة.",
+  "توازن بين الأداء والستايل من أول لبس.",
+  "لمسة أخيرة تجعل الحذاء يشبهك."
+];
+
+function renderScene() {
+  const shoes = SCENE_SHOES
+    .map(([id, tone]) => ({ product: getProductById(id), tone }))
+    .filter((x) => x.product);
+  const n = shoes.length;
+  const first = shoes[0];
+  return `
+    <section class="cx" data-cx data-active="0" style="--cx-n:${n};--cx-tone:${first.tone}" aria-label="خطوتك القادمة">
+      <div class="cx-sticky">
+        <div class="cx-bgs" aria-hidden="true">
+          ${shoes.map((x) => `<i class="cx-bg" data-cx-bg style="--t:${x.tone}"></i>`).join("")}
+        </div>
+        <div class="cx-halo" aria-hidden="true"></div>
+        <div class="cx-ghost" data-cx-ghost aria-hidden="true"><span>ZERO</span><span>COMPROMISE</span></div>
+        <div class="cx-brandline"><b>KHALIL</b><span>STORE · 2026</span></div>
+
+        <div class="cx-ring">
+          ${shoes.map((x, i) => `
+            <button type="button" class="cx-item" data-cx-item data-tone="${x.tone}" aria-label="${escapeHtml(x.product.name)}">
+              <img src="${x.product.images[0]}" alt="${escapeHtml(x.product.name)}" draggable="false" loading="eager">
+            </button>`).join("")}
+        </div>
+
+        <button type="button" class="cx-arrow cx-arrow-prev" data-cx-arrow="-1" aria-label="السابق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="cx-arrow cx-arrow-next" data-cx-arrow="1" aria-label="التالي"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+
+        <div class="cx-names">
+          ${shoes.map((x, i) => `
+            <div class="cx-name ${i === 0 ? "on" : ""}" data-cx-name>
+              <small>${escapeHtml(x.product.brand)} · ${formatPrice(x.product.price)}</small>
+              <h1>${escapeHtml(x.product.name)}</h1>
+            </div>`).join("")}
+        </div>
+
+        <div class="cx-copy">
+          ${shoes.map((x, i) => {
+            const p = x.product;
+            const rows = [
+              { t: p.name, d: p.description },
+              ...p.specs.slice(0, 4).map((spec, k) => ({ t: spec, d: CHAPTER_BLURBS[k] }))
+            ];
+            return `
+            <div class="cx-set ${i === 0 ? "on" : ""}" data-cx-chapters>
+              ${rows.map((r, k) => `
+                <article class="cx-ch"><span class="cx-tag">0${k + 1}</span><h2>${escapeHtml(r.t)}</h2><p>${escapeHtml(r.d)}</p></article>`).join("")}
+            </div>`;
+          }).join("")}
+        </div>
+
+        <nav class="cx-rail-wrap" aria-label="فصول المنتج">
+          ${[0, 1, 2, 3, 4].map((k) => `<button type="button" class="cx-rail" data-cx-rail="${k}" aria-label="الفصل ${k + 1}">0${k + 1}</button>`).join("")}
+        </nav>
+
+        <div class="cx-buy" data-cx-buy>
+          ${shoes.map((x, i) => `
+            <a class="btn btn-primary cx-buy-link ${i === 0 ? "" : "is-off"}" data-cx-buylink="${i}" href="#/product/${x.product.id}" data-action="go-product">اشتر ${escapeHtml(x.product.name)} — ${formatPrice(x.product.price)}</a>`).join("")}
+        </div>
+
+        <div class="cx-hint" data-cx-hint><span>مرّر للاستكشاف</span><i></i></div>
+        <div class="cx-progress"><b data-cx-bar></b></div>
+      </div>
+    </section>`;
+}
+
+function renderLineupFaq() {
+  const shoes = SCENE_SHOES.map(([id]) => getProductById(id)).filter(Boolean);
+  const faqs = [
+    ["هل الأحذية أصلية؟", "نعم، كل زوج في khalil store أصلي ومفحوص قبل الشحن."],
+    ["كم يستغرق التوصيل؟", "الشحن سريع، ويصلك الطلب خلال أيام قليلة حسب مدينتك."],
+    ["كيف أختار مقاسي؟", "اختر مقاسك من صفحة المنتج، وإن كنت بين مقاسين فالأكبر أريح غالبًا."],
+    ["هل يمكنني الاستبدال؟", "نعم، يمكنك الاستبدال خلال المدة المحددة إذا كان الحذاء غير مستعمل."]
+  ];
+  return `
+    <section class="cx-lineup" aria-label="التشكيلة">
+      <h2 class="cx-lineup-title">THE LINEUP<i>.</i></h2>
+      <div class="cx-row">
+        ${shoes.map((p, i) => `<a class="cx-row-item" style="--i:${i}" href="#/product/${p.id}" data-action="go-product" aria-label="${escapeHtml(p.name)}"><img src="${p.images[0]}" alt="${escapeHtml(p.name)}" loading="lazy"></a>`).join("")}
+      </div>
+      <div class="container cx-faq">
+        <h3>أسئلة شائعة</h3>
+        ${faqs.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join("")}
+      </div>
+    </section>`;
 }

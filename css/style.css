@@ -3222,3 +3222,111 @@ html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-floor {
   .showcase .stage-chip,
   .showcase .stage-line { transition: none !important; animation: none !important; }
 }
+
+/* ============================================================
+   CIRO-STYLE SCROLL SCENE  (js/scene.js · render.js → renderScene)
+   Line-up arc → focused shoe + chapters → ghost headline finale.
+   ============================================================ */
+.cx {
+  --cx-size: 300px; --cx-tone: #14B8C4;
+  position: relative; height: calc((100svh - var(--header-h, 72px)) * 7.4);
+  background: #05050a; color: #fff; direction: rtl;
+}
+.cx-sticky {
+  position: sticky; top: var(--header-h, 72px); height: calc(100svh - var(--header-h, 72px));
+  overflow: hidden; isolation: isolate; perspective: 1500px; perspective-origin: 50% 40%;
+}
+.cx-bgs, .cx-bg { position: absolute; inset: 0; }
+.cx-bg { opacity: 0; background:
+  radial-gradient(ellipse 70% 60% at 50% 46%, color-mix(in srgb, var(--t) 78%, #000) 0%, color-mix(in srgb, var(--t) 38%, #05050a) 52%, #05050a 100%); }
+.cx-halo { position: absolute; left: 50%; top: 4%; width: min(34vw, 380px); height: 90px; transform: translateX(-50%);
+  border-radius: 50%; background: radial-gradient(ellipse at center, rgba(255,255,255,.55), rgba(255,255,255,0) 68%);
+  opacity: calc(1 - var(--cx-focus, 0)); filter: blur(2px); z-index: 1; pointer-events: none; }
+.cx-brandline { position: absolute; z-index: 30; top: 14px; inset-inline: 22px; display: flex; justify-content: space-between;
+  font: 800 12px/1 "Barlow Condensed", "Cairo", sans-serif; letter-spacing: .22em; opacity: .75; direction: ltr; }
+.cx-ghost { position: absolute; z-index: 2; inset-inline: 0; bottom: 11%; display: flex; flex-direction: column; align-items: center;
+  font: 900 clamp(84px, 19vw, 300px)/.84 "Barlow Condensed", sans-serif; letter-spacing: -.01em; color: rgba(255,255,255,.17);
+  text-transform: uppercase; opacity: 0; pointer-events: none; direction: ltr; }
+.cx-ghost span:last-child { font-size: .62em; }
+
+.cx-ring { position: absolute; inset: 0; z-index: 10; transform-style: preserve-3d; }
+.cx-item { position: absolute; left: 50%; top: 44%; width: var(--cx-size); height: var(--cx-size);
+  margin: calc(var(--cx-size) / -2) 0 0 calc(var(--cx-size) / -2); padding: 0; border: 0; background: none; cursor: pointer;
+  will-change: transform, opacity; -webkit-tap-highlight-color: transparent; }
+.cx-item img { width: 100%; height: 100%; object-fit: contain; display: block; user-select: none; -webkit-user-drag: none;
+  filter: drop-shadow(0 26px 22px rgba(0,0,0,.5)); }
+.cx-item:focus-visible { outline: 2px solid #fff; outline-offset: 6px; border-radius: 24px; }
+
+.cx-arrow { position: absolute; z-index: 25; top: 44%; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+  border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.08); color: #fff; cursor: pointer; backdrop-filter: blur(8px); }
+.cx-arrow svg { width: 20px; height: 20px; } .cx-arrow:hover { background: #fff; color: #05050a; }
+.cx-arrow-prev { right: clamp(10px, 4vw, 56px); } .cx-arrow-next { left: clamp(10px, 4vw, 56px); }
+
+.cx-names { position: absolute; z-index: 24; inset-inline: 0; bottom: clamp(70px, 11vh, 120px); text-align: center; pointer-events: none; }
+.cx-name { position: absolute; inset-inline: 0; bottom: 0; will-change: transform, opacity; }
+.cx-name:not(.on) { visibility: hidden; }
+.cx-name small { display: block; font: 700 13px/1 "Cairo", sans-serif; letter-spacing: .12em; opacity: .75; margin-bottom: 8px; }
+.cx-name h1 { margin: 0; font: 900 clamp(34px, 7.4vw, 96px)/.92 "Barlow Condensed", sans-serif; text-transform: uppercase; letter-spacing: .01em; direction: ltr; }
+
+.cx-copy { position: absolute; z-index: 26; inset-inline-start: clamp(20px, 5vw, 80px); top: 50%; width: min(30vw, 380px); transform: translateY(-50%); pointer-events: none; }
+.cx-set { position: absolute; inset: 0 0 auto 0; transform: translateY(-50%); top: 50%; display: none; }
+.cx-set.on { display: block; }
+.cx-ch { position: absolute; inset-inline: 0; top: 0; transform: translateY(-50%); opacity: 0; will-change: transform, opacity; }
+.cx-set.on { height: 0; }
+.cx-tag { display: inline-block; padding: 4px 10px; margin-bottom: 14px; background: #fff; color: #05050a; font: 800 12px/1 "Barlow Condensed", sans-serif; letter-spacing: .14em; }
+.cx-ch h2 { margin: 0 0 12px; font: 900 clamp(26px, 3.4vw, 48px)/1.05 "Cairo", "Barlow Condensed", sans-serif; text-transform: uppercase; }
+.cx-ch p { margin: 0; font-size: clamp(14px, 1.15vw, 17px); line-height: 1.7; color: rgba(255,255,255,.82); }
+
+.cx-rail-wrap { position: absolute; z-index: 27; inset-inline-end: clamp(14px, 3vw, 44px); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; opacity: 0; }
+.cx-rail { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.3); background: rgba(0,0,0,.28); color: #fff;
+  font: 800 13px/1 "Barlow Condensed", sans-serif; letter-spacing: .06em; cursor: pointer; backdrop-filter: blur(8px); transition: background .3s, color .3s, transform .3s; }
+.cx-rail.on { background: #fff; color: #05050a; transform: scale(1.12); }
+
+.cx-buy { position: absolute; z-index: 30; left: 50%; bottom: clamp(18px, 4vh, 40px); transform: translateX(-50%); opacity: 0; pointer-events: none; white-space: nowrap; }
+.cx-buy-link { box-shadow: 0 14px 40px rgba(0,0,0,.45); background: #fff; color: #05050a; border-color: #fff; }
+.cx-buy-link.is-off { display: none; }
+
+.cx-hint { position: absolute; z-index: 28; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px;
+  font: 700 12px/1 "Cairo", sans-serif; letter-spacing: .1em; opacity: .8; }
+.cx-hint i { width: 1px; height: 28px; background: linear-gradient(#fff, transparent); animation: cxHint 1.6s ease-in-out infinite; }
+@keyframes cxHint { 0%,100% { transform: scaleY(.4); transform-origin: top; } 50% { transform: scaleY(1); } }
+.cx-progress { position: absolute; z-index: 40; inset: 0 0 auto 0; height: 3px; background: rgba(255,255,255,.12); }
+.cx-progress b { display: block; height: 100%; background: #fff; transform-origin: right center; transform: scaleX(0); }
+
+/* ---------- THE LINEUP + FAQ ---------- */
+.cx-lineup { position: relative; background: #05050a; color: #fff; padding: clamp(60px, 10vw, 140px) 0 clamp(50px, 8vw, 100px); overflow: hidden; }
+.cx-lineup-title { margin: 0 0 clamp(10px, 3vw, 40px); text-align: center; font: 900 clamp(60px, 15vw, 220px)/.85 "Barlow Condensed", sans-serif; letter-spacing: -.01em; color: rgba(255,255,255,.92); direction: ltr; }
+.cx-lineup-title i { color: var(--site-color); font-style: normal; }
+.cx-row { display: flex; justify-content: center; transform: rotate(-9deg) scale(1.05); margin: clamp(0px, 2vw, 30px) 0 clamp(50px, 8vw, 110px); padding: 0 4vw; direction: ltr; }
+.cx-row-item { flex: 0 0 auto; width: clamp(96px, 15vw, 210px); margin-inline: -1.6vw; transform: translateY(calc(var(--i) * -10px)); transition: transform .4s cubic-bezier(.22,1,.36,1); }
+.cx-row-item img { width: 100%; display: block; filter: drop-shadow(0 18px 18px rgba(0,0,0,.55)); }
+.cx-row-item:hover { transform: translateY(calc(var(--i) * -10px - 22px)) scale(1.08); z-index: 3; }
+.cx-faq { max-width: 760px; }
+.cx-faq h3 { margin: 0 0 18px; font: 900 28px/1 "Cairo", sans-serif; }
+.cx-faq details { border-top: 1px solid rgba(255,255,255,.18); padding: 18px 0; }
+.cx-faq details:last-child { border-bottom: 1px solid rgba(255,255,255,.18); }
+.cx-faq summary { cursor: pointer; font-weight: 800; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.cx-faq summary::after { content: "+"; font-size: 22px; line-height: 1; }
+.cx-faq details[open] summary::after { content: "–"; }
+.cx-faq p { margin: 12px 0 0; color: rgba(255,255,255,.72); line-height: 1.8; }
+
+@media (max-width: 760px) {
+  .cx-copy { inset-inline: 20px; width: auto; top: auto; bottom: 104px; transform: none; }
+  .cx-ghost { bottom: 24%; } .cx-buy { bottom: 92px; } .cx-hint { display: none; }
+  .cx-set { top: auto; bottom: 0; transform: none; }
+  .cx-ch { top: auto; bottom: 0; transform: none; }
+  .cx-ch h2 { font-size: 24px; } .cx-ch p { font-size: 14px; line-height: 1.55; }
+  .cx-rail-wrap { top: 10px; flex-direction: row; transform: translateX(0); inset-inline: 0; justify-content: center; }
+  .cx-rail { width: 38px; height: 38px; }
+  .cx-arrow { width: 38px; height: 38px; top: 38%; }
+  .cx-item { top: 40%; }
+  .cx-names { bottom: 112px; }
+}
+
+/* Reduced motion: stacked, static line-up (JS never runs the scene). */
+html[data-motion="reduce"] .cx { height: auto; }
+html[data-motion="reduce"] .cx-sticky { position: relative; top: 0; height: auto; padding: 30px 0; }
+html[data-motion="reduce"] .cx-ring { position: static; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+html[data-motion="reduce"] .cx-item { position: static; margin: 0; width: 160px; height: 160px; }
+html[data-motion="reduce"] :is(.cx-arrow, .cx-copy, .cx-rail-wrap, .cx-buy, .cx-hint, .cx-ghost, .cx-halo, .cx-names, .cx-progress) { display: none; }
+html[data-motion="reduce"] .cx-bg:first-child { opacity: .5; }

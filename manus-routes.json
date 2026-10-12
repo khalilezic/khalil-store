@@ -1,0 +1,1 @@
+{"routes":[{"path":"/","title":"الرئيسية"},{"path":"/shop","title":"المتجر"},{"path":"/product/:id","title":"تفاصيل المنتج"},{"path":"/favorites","title":"المفضلة"},{"path":"/cart","title":"السلة"},{"path":"/checkout","title":"الدفع"},{"path":"/order-success","title":"تأكيد الطلب"},{"path":"/about","title":"عن المتجر"}]}

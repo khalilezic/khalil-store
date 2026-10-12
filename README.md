@@ -139,3 +139,20 @@ Implementation notes that keep it honest:
 - **Self-contained runtime** — GSAP 3.12.5 (`js/vendor/`) and Cairo /
   Barlow Condensed (`assets/fonts/`, OFL) are served from the repo, so the store
   has no third-party CDN dependency.
+
+
+---
+
+## v4 — Ciro-style scroll scene (الحلقة السينمائية)
+
+The home hero + showcase were replaced by one full-screen sticky scene
+(`js/scene.js`, markup in `renderScene()` inside `js/render.js`, styles in the
+`CIRO-STYLE SCROLL SCENE` block of `css/style.css`):
+
+1. **Line-up** — 9 sneakers on a curved 3D arc; arrows, swipe, click or ←/→ pick one.
+2. **Chapters** — scrolling brings the chosen shoe forward, floods the scene with its
+   colour, and reads 5 chapters (name + 4 specs from `data.js`) beside a numbered rail.
+3. **Finale** — giant ghost headline behind the shoe + buy button.
+4. Below: `THE LINEUP.` diagonal row and an Arabic FAQ.
+
+Edit the shoes/colours in `SCENE_SHOES` (render.js). Reduced-motion visitors get a static stack.
