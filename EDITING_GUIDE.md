@@ -59,3 +59,31 @@ heroTimer = setInterval(() => setHeroSlide(heroIndex + 1), 5200)
 ```bash
 for f in js/*.js; do node --check "$f" || exit 1; done
 ```
+
+## مشهد التمرير السينمائي (Cinematic Scroll Showcase)
+
+أُضيف في الصفحة الرئيسية بين الواجهة وشريط العلامات مشهد واحد يعرض ثلاثة إصدارات
+ويُدار بالتمرير عبر `js/stage.js`:
+
+- الخلفية/الإضاءة تتغير بلون المنتج نفسه (`product.colors[0].hex` مُعدَّلًا دالة `accentTone` في `js/utils.js`).
+- الحذاء يتقدّم من مجموعة إلى المنتصف (تكوين مشترك ثم منتج بارز)، وتتجمّع حوله
+  تفاصيله الحقيقية من `product.specs` خطًا خطًا، مع بطاقة السعر والتقييم والمقاسات.
+- لم يتم اختراع أي صورة أو مكوّن: كل ما يظهر مأخوذ من `js/data.js` وصور `assets/`.
+
+### كيف تعدّله
+
+| ما تريد تغييره | المكان |
+|----------------|--------|
+| الإصدارات الثلاثة | `STAGE_LINEUP` في `js/data.js` |
+| طول المشهد | `height: calc(var(--stage-chapters) * 118vh + 44vh)` في `css/style.css` |
+| توقيت الشرائح والتجميع | مصفوفة الحلقة داخل `initStageCinema()` في `js/stage.js` |
+| إيقاع الالتقاط (scrub) | `scrub: .55` في نفس الدالة |
+| ترتيب مسرح الجوال | كتلتا `@media (max-width: 880px/640px)` داخل قسم `CINEMATIC SCROLL SHOWCASE` |
+
+### قواعد ثابتة في هذا القسم
+
+- حرّك `transform` و`opacity` فقط، ولا تحرّك `filter` أو `box-shadow` في كل إطار.
+- ScrollTrigger واحد فقط للمشهد: لا تُضف pin ولا محفزات لكل بطاقة.
+- المعلومات التي تظهر لاحقًا تُخفى افتراضيًا في CSS (وإلا تراكمت البطاقات).
+- `prefers-reduced-motion` يعيد تلقائيًا النسخة المكدّسة الثابتة `[data-stage-mode="static"]`.
+- `router()` في `js/app.js` ينظّف الـcontext والمحفزات عند كل تغيير صفحة — حافظ على ذلك.

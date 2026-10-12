@@ -2854,3 +2854,371 @@ body.home-theme.gsap-ready .floating-sneaker {
   will-change: transform;
 }
 :root.gsap-theme-snap { transition: none !important; }
+
+/* ============================================================
+   CINEMATIC SCROLL SHOWCASE  (js/stage.js)
+   ------------------------------------------------------------
+   One sticky stage, three sneakers, driven by scroll position.
+     · default + reduced motion  → static stacked panels (no JS needed)
+     · html[data-motion="full"]  → sticky stage, scene assembling on scroll
+   Only transform / opacity are animated; the glassy light change is a
+   discrete crossfade of three pre-composed gradients (no per-frame filter).
+   ============================================================ */
+.showcase {
+  position: relative;
+  --stage-nav-gap: 0px;
+  background: radial-gradient(ellipse 78% 60% at 50% 8%, color-mix(in srgb, var(--site-color) 12%, transparent) 0%, transparent 74%),
+              linear-gradient(180deg, #050607 0%, #07080A 42%, #040506 100%);
+}
+
+/* ---------- shared pieces (both modes) ---------- */
+.showcase-head {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--shell-px);
+}
+.showcase-kicker {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 5px 12px;
+  border: 1px solid color-mix(in srgb, var(--site-color) 58%, #fff 42%);
+  border-radius: var(--radius-full);
+  color: color-mix(in srgb, var(--site-color) 42%, #fff 58%);
+  font: 800 11px/1 var(--font-en);
+  letter-spacing: 1.6px;
+}
+.showcase-head h2 {
+  color: #fff;
+  font-size: clamp(26px, 3.4vw, 46px);
+  line-height: 1.15;
+  letter-spacing: -.03em;
+}
+.showcase-head h2 .light { color: var(--silver); font-weight: 700; }
+.showcase-head p {
+  max-width: 520px;
+  margin-top: 8px;
+  color: rgba(240,242,246,.62);
+  font-size: clamp(12.5px, 1.1vw, 15px);
+  line-height: 1.75;
+}
+
+.showcase-deck {
+  position: relative;
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--shell-px);
+}
+.stage-panel { position: relative; }
+.stage-shoe-layer { position: relative; }
+.stage-pool { display: none; }
+.stage-shoe {
+  display: block;
+  margin: 0 auto;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.stage-features { display: flex; flex-direction: column; gap: 10px; }
+.stage-feature { display: flex; align-items: center; gap: 10px; }
+.stage-line {
+  flex: 1 1 auto;
+  max-width: 130px;
+  height: 1px;
+  transform-origin: 100% 50%;
+  background: linear-gradient(to left, color-mix(in srgb, var(--panel-tone) 78%, transparent), transparent);
+}
+.stage-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 13px;
+  border: 1px solid color-mix(in srgb, var(--panel-tone) 36%, rgba(255,255,255,.14));
+  border-radius: var(--radius-full);
+  background: rgba(9,10,13,.72);
+  color: rgba(244,246,249,.9);
+  font-size: clamp(11.5px, 1vw, 13px);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.stage-chip::before {
+  content: "";
+  width: 6px; height: 6px;
+  margin-left: 8px;
+  border-radius: 50%;
+  background: var(--panel-tone);
+  box-shadow: 0 0 10px var(--panel-tone);
+}
+
+.stage-meta { display: grid; gap: 8px; }
+.stage-meta-top { display: flex; align-items: center; gap: 9px; color: rgba(238,240,244,.6); font: 700 11.5px/1 var(--font-en); letter-spacing: 1.2px; }
+.stage-meta-top b { color: #fff; letter-spacing: 1.6px; }
+.stage-meta-top i { font-style: normal; font-family: var(--font-ar); letter-spacing: 0; }
+.stage-tag {
+  padding: 4px 9px;
+  border-radius: var(--radius-full);
+  background: var(--panel-tone);
+  color: #08090B;
+  font: 900 10.5px/1 var(--font-ar);
+  letter-spacing: 0;
+}
+.stage-meta h3 { color: #fff; font: 900 clamp(21px, 2.3vw, 34px)/1.1 var(--font-en); letter-spacing: -.02em; }
+.stage-price { display: flex; align-items: baseline; gap: 10px; }
+.stage-price strong { color: var(--silver); font: 900 clamp(19px, 2vw, 27px)/1 var(--font-en); }
+.stage-price s { color: rgba(240,242,246,.42); font: 700 14px/1 var(--font-en); }
+.stage-facts { display: flex; align-items: center; gap: 12px; color: rgba(240,242,246,.62); font-size: 12px; }
+.stage-facts .rating .stars svg { fill: var(--silver); }
+.stage-cta { justify-self: start; margin-top: 4px; }
+
+.showcase-rail { display: flex; gap: 8px; width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 var(--shell-px); }
+.rail-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 9px 12px 13px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--radius-sm);
+  background: rgba(10,11,14,.5);
+  color: rgba(238,240,244,.62);
+  text-align: right;
+  transition: border-color .3s ease, color .3s ease, background-color .3s ease;
+}
+.rail-item:hover { border-color: color-mix(in srgb, var(--site-color) 52%, transparent); color: #fff; }
+.rail-item.is-active { border-color: color-mix(in srgb, var(--site-color) 66%, transparent); background: rgba(14,16,20,.78); color: #fff; }
+.rail-thumb { flex: 0 0 auto; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,.05); }
+.rail-thumb img { width: 34px; height: 34px; object-fit: contain; }
+.rail-copy { display: grid; min-width: 0; }
+.rail-copy b { font: 800 12.5px/1.25 var(--font-en); letter-spacing: .3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rail-copy em { color: rgba(238,240,244,.5); font: 700 10.5px/1.3 var(--font-en); font-style: normal; letter-spacing: 1.1px; }
+.rail-bar {
+  position: absolute;
+  left: 12px; right: 12px; bottom: 6px;
+  height: 2px;
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  background: linear-gradient(to left, color-mix(in srgb, var(--site-color) 92%, #fff 8%), color-mix(in srgb, var(--site-color) 34%, transparent));
+}
+
+/* ---------- static mode: readable stacked panels ---------- */
+.showcase .showcase-sticky { position: relative; padding: clamp(28px, 5vh, 56px) 0 clamp(34px, 6vh, 64px); }
+.showcase .showcase-ambience { display: none; }
+.showcase .showcase-deck { display: grid; gap: clamp(18px, 2.4vw, 30px); }
+.showcase .showcase-head { margin-bottom: clamp(16px, 2.6vh, 30px); }
+.showcase .stage-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+  grid-template-areas: "shoe meta" "feat feat";
+  gap: clamp(14px, 2vw, 26px);
+  padding: clamp(18px, 2.4vw, 30px);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(ellipse 62% 74% at 32% 46%, color-mix(in srgb, var(--panel-tone) 22%, transparent) 0%, transparent 72%),
+    linear-gradient(150deg, rgba(20,22,27,.86), rgba(7,8,10,.94));
+}
+.showcase .stage-shoe-layer { grid-area: shoe; display: grid; place-items: center; min-height: clamp(190px, 26vw, 300px); }
+.showcase .stage-pool { display: block; position: absolute; left: 50%; top: 74%; width: 48%; height: 12%; border-radius: 50%; transform: translate(-50%, -50%); background: radial-gradient(ellipse, color-mix(in srgb, var(--panel-tone) 58%, transparent), transparent 72%); }
+.showcase .stage-shoe { width: min(100%, 420px); }
+.showcase .stage-meta { grid-area: meta; align-content: center; }
+.showcase .stage-features { grid-area: feat; flex-direction: row; flex-wrap: wrap; gap: 10px 14px; }
+.showcase .stage-feature { flex: 0 1 auto; }
+.showcase .stage-line { flex: 0 0 26px; max-width: 26px; }
+.showcase .showcase-rail { margin-top: clamp(14px, 2.4vh, 26px); }
+
+/* ---------- cinematic mode (only when motion is welcome) ---------- */
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] { height: calc(var(--stage-chapters, 3) * 118vh + 44vh); }
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .showcase-sticky {
+  position: sticky;
+  top: var(--header-h);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(8px, 1.4vh, 20px);
+  height: calc(100svh - var(--header-h) - var(--stage-nav-gap));
+  padding: clamp(14px, 2.2vh, 28px) 0 clamp(10px, 1.8vh, 24px);
+  overflow: hidden;
+  contain: paint;
+}
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .showcase-head {
+  position: relative;
+  z-index: 30;
+  text-align: center;
+}
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .showcase-head p { margin-inline: auto; }
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .showcase-deck {
+  position: relative;
+  min-height: 0;
+  padding: 0 var(--shell-px);
+}
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-panel {
+  position: absolute;
+  inset: 0;
+  display: block;        /* drop the stacked-layout grid so the children can breathe */
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+/* The stacked layout gives every child a named grid area; without this reset
+   an absolutely positioned child is confined to that area instead of the stage. */
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-shoe-layer,
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-meta,
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-features {
+  grid-area: auto;
+}
+/* The travelling shoe keeps to the middle band, so it can never slide under the
+   feature callouts (left column) or the product card (right column) — matching
+   the stage-inset feel of the reference motion without covering any text. */
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-shoe-layer {
+  position: absolute;
+  inset: 3% 32% 3% 30%;
+  z-index: 10;
+  /* flex (not grid): a centered flex item resolves max-height:100% against the
+     layer's definite height, so the shoe always fits its band on every screen. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity;
+}
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-shoe {
+  width: min(100%, 620px);
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-pool {
+  display: block;
+  position: absolute;
+  left: 50%; top: 76%;
+  width: 44%; height: 13%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--panel-tone) 62%, transparent) 0%, transparent 72%);
+  opacity: .5;
+  will-change: transform, opacity;
+}
+/* Everything that the scrubbed timeline brings in later must start hidden in
+   CSS: GSAP only applies a tween's "from" state when its playhead arrives, so
+   without this the three product cards would stack on top of each other. */
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-meta,
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-feature {
+  opacity: 0;
+  visibility: hidden;
+}
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-features {
+  position: absolute;
+  z-index: 20;
+  top: 50%;
+  left: 0;
+  width: min(30%, 320px);
+  transform: translateY(-50%);
+}
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-meta {
+  position: absolute;
+  z-index: 25;
+  top: 50%;
+  right: 0;
+  width: min(32%, 336px);
+  transform: translateY(-50%);
+  will-change: transform, opacity;
+}
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-feature,
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .rail-item { will-change: transform, opacity; }
+
+.showcase-ambience { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-tone {
+  position: absolute;
+  inset: -12% -6%;
+  opacity: 0;
+  background:
+    radial-gradient(ellipse 46% 52% at 50% 44%, color-mix(in srgb, var(--tone) 40%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 40% at 50% 88%, color-mix(in srgb, var(--tone) 22%, transparent) 0%, transparent 76%);
+}
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-tone:first-of-type { opacity: .62; }
+html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-floor {
+  position: absolute;
+  left: 50%; bottom: 8%;
+  width: 74%; height: 26%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.07) 0%, transparent 62%),
+    linear-gradient(to top, rgba(255,255,255,.05), transparent 70%);
+  will-change: transform;
+}
+
+/* ---------- small screens ---------- */
+@media (max-width: 1024px) {
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-features { width: min(34%, 280px); }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-meta { width: min(36%, 300px); }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-shoe-layer { inset: 3% 37% 3% 35%; }
+}
+@media (max-width: 880px) {
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] { --stage-nav-gap: 0px; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .showcase-sticky { gap: 6px; padding-top: 12px; padding-bottom: 10px; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .showcase-head p { display: none; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .showcase-kicker { margin-bottom: 6px; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-shoe-layer { inset: 0 0 48% 0; }
+  /* Fit the shot inside its band (keeps the aspect ratio, never reaches the
+     callouts below): on phones the stage is a vertical stack, so the shoe only
+     owns the top half of the scene. */
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-shoe {
+    width: auto !important;
+    height: auto !important;
+    max-width: 78% !important;
+    max-height: 100% !important;
+    object-fit: contain;
+  }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-pool { top: 86%; width: 58%; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-features {
+    position: absolute;
+    top: 56%;
+    left: 0; right: 0;
+    width: auto;
+    transform: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-line { display: none; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-chip { width: 100%; justify-content: center; padding: 6px 9px; font-size: 11px; white-space: normal; text-align: center; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-meta {
+    top: auto; bottom: 0; left: 0; right: 0;
+    width: auto;
+    transform: none;
+    justify-items: center;
+    text-align: center;
+    gap: 5px;
+  }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-meta h3 { font-size: 22px; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-cta { justify-self: center; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-facts { justify-content: center; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .rail-thumb { width: 34px; height: 34px; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .rail-thumb img { width: 28px; height: 28px; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .rail-copy em { display: none; }
+  .showcase .stage-panel { grid-template-columns: 1fr; grid-template-areas: "shoe" "meta" "feat"; }
+}
+@media (max-width: 640px) {
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] { --stage-nav-gap: 84px; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-shoe-layer { inset: 0 0 52% 0; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-features { top: 58%; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-features .stage-feature:nth-child(n + 3) { display: none; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-chip { font-size: 10.5px; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-price strong { font-size: 22px; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .stage-sizes { display: none; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .rail-copy b { font-size: 11px; }
+}
+@media (max-width: 420px) {
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .rail-copy { display: none; }
+  html[data-motion="full"] .showcase[data-stage-mode="cinema"] .rail-item { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .showcase .rail-item,
+  .showcase .stage-chip,
+  .showcase .stage-line { transition: none !important; animation: none !important; }
+}

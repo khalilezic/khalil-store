@@ -7,9 +7,12 @@
    and very easy to port to a framework later (React, Vue, etc.)
    ============================================================ */
 
-import { PRODUCTS, CATEGORIES, HERO_IMAGE, getProductById, getRelatedProducts } from "./data.js";
+import {
+  PRODUCTS, CATEGORIES, HERO_IMAGE, HERO_LINEUP, STAGE_LINEUP,
+  getProductById, getRelatedProducts
+} from "./data.js";
 import { ICONS, starRating } from "./icons.js";
-import { formatPrice, escapeHtml, parseQuery } from "./utils.js";
+import { formatPrice, escapeHtml, parseQuery, accentTone } from "./utils.js";
 import {
   isFavorite,
   getCartLinesWithProducts,
@@ -98,7 +101,7 @@ export function renderHome() {
   const bestsellers = PRODUCTS.filter((p) => p.tags.includes("bestseller")).slice(0, 4);
   const newArrivals = PRODUCTS.filter((p) => p.tags.includes("new")).slice(0, 4);
   const onSale      = PRODUCTS.filter((p) => p.tags.includes("sale")).slice(0, 2);
-  const heroProducts = ["p4", "p8", "p7"].map((id) => getProductById(id)).filter(Boolean);
+  const heroProducts = HERO_LINEUP.map((id) => getProductById(id)).filter(Boolean);
   const heroColors = { p4: "#118E97", p8: "#CE2633", p7: "#F08224" };
 
   return `
@@ -154,6 +157,9 @@ export function renderHome() {
         </div>
       </div>
     </section>
+
+    <!-- CINEMATIC SCROLL SHOWCASE ------------------------------------ -->
+    ${renderShowcase()}
 
     <!-- BRAND STRIP -------------------------------------------------- -->
     <section class="brand-strip">
@@ -232,6 +238,111 @@ export function renderHome() {
       </div>
     </section>
   `;
+}
+
+/* ============================================================
+   CINEMATIC SCROLL SHOWCASE  (mshhad / stage)
+   ------------------------------------------------------------
+   One sticky stage, three sneakers, driven by scroll position
+   (js/stage.js). The scene is built from real catalogue data only:
+     · the shoe photography already in assets/
+     · product.specs          → the callouts that assemble around it
+     · product.colors[0].hex  → the scene light (clamped by accentTone)
+     · brand / price / rating / sizes → the product card beside it
+
+   Markup contract (read by js/stage.js — keep the hooks):
+     [data-showcase]          section root + --stage-chapters
+     [data-stage-panel="i"]   one product panel (shoe + features + meta)
+     .stage-shoe-layer        the layer that travels between slots
+     .stage-feature           one assembling callout (chip + line)
+     .stage-meta              the info column that assembles with it
+     [data-stage-tone="i"]    scene light per product
+     [data-action="stage-goto"]  rail button → scrolls to that chapter
+   ============================================================ */
+function renderShowcase() {
+  const lineup = STAGE_LINEUP.map((id) => getProductById(id)).filter(Boolean);
+  if (lineup.length < 2) return "";
+
+  const categoryName = (slug) => CATEGORIES.find((c) => c.slug === slug)?.name || "";
+  const tagFor = (product) => {
+    if (product.tags.includes("sale") && product.oldPrice) {
+      return `خصم ${Math.round((1 - product.price / product.oldPrice) * 100)}%`;
+    }
+    if (product.tags.includes("new")) return "جديد";
+    if (product.tags.includes("bestseller")) return "الأكثر مبيعًا";
+    return "";
+  };
+
+  return `
+    <section class="showcase" id="showcase" data-showcase data-stage-mode="cinema"
+             style="--stage-chapters:${lineup.length}"
+             aria-labelledby="showcaseTitle">
+      <div class="showcase-sticky">
+        <div class="showcase-ambience" aria-hidden="true">
+          ${lineup.map((p, i) => `<span class="stage-tone" data-stage-tone="${i}" style="--tone:${accentTone(p.colors[0].hex)}"></span>`).join("")}
+          <span class="stage-floor"></span>
+        </div>
+
+        <header class="showcase-head">
+          <span class="showcase-kicker">${lineup.length} إصدارات في مشهد واحد</span>
+          <h2 id="showcaseTitle">من المجموعة <span class="light">إلى حذائك</span></h2>
+          <p>مرّر للأسفل: تتقدّم القطعة إلى المنتصف، ويتجمّع حولها الضوء وتفاصيلها.</p>
+        </header>
+
+        <div class="showcase-deck">
+          ${lineup.map((p, i) => {
+            const tone = accentTone(p.colors[0].hex);
+            const tag = tagFor(p);
+            return `
+            <article class="stage-panel" data-stage-panel="${i}" style="--panel-tone:${tone}">
+              <div class="stage-shoe-layer">
+                <span class="stage-pool" aria-hidden="true"></span>
+                <img class="stage-shoe" src="${p.images[0]}" alt="${escapeHtml(p.name)}"
+                     ${i === 0 ? "" : 'loading="lazy"'} decoding="async" draggable="false">
+              </div>
+
+              <ul class="stage-features">
+                ${p.specs.slice(0, 4).map((spec, k) => `
+                  <li class="stage-feature" style="--f:${k}">
+                    <i class="stage-line" aria-hidden="true"></i>
+                    <span class="stage-chip">${escapeHtml(spec)}</span>
+                  </li>`).join("")}
+              </ul>
+
+              <div class="stage-meta">
+                <span class="stage-meta-top">
+                  ${tag ? `<em class="stage-tag">${tag}</em>` : ""}
+                  <b>${escapeHtml(p.brand)}</b>
+                  <i>${escapeHtml(categoryName(p.category))}</i>
+                </span>
+                <h3>${escapeHtml(p.name)}</h3>
+                <div class="stage-price">
+                  <strong>${formatPrice(p.price)}</strong>
+                  ${p.oldPrice ? `<s>${formatPrice(p.oldPrice)}</s>` : ""}
+                </div>
+                <div class="stage-facts">
+                  ${starRating(p.rating, p.reviews)}
+                  <span class="stage-sizes">${p.sizes.length} مقاسًا متاحًا</span>
+                </div>
+                <a class="btn btn-primary stage-cta" href="#/product/${p.id}" data-action="go-link">اكتشف المنتج</a>
+              </div>
+            </article>`;
+          }).join("")}
+        </div>
+
+        <nav class="showcase-rail" aria-label="التنقل بين إصدارات المشهد">
+          ${lineup.map((p, i) => `
+            <button type="button" class="rail-item${i === 0 ? " is-active" : ""}"
+                    data-action="stage-goto" data-index="${i}"
+                    aria-current="${i === 0 ? "true" : "false"}"
+                    aria-label="الانتقال إلى ${escapeHtml(p.name)}">
+              <span class="rail-thumb"><img src="${p.images[0]}" alt="" loading="lazy" decoding="async"></span>
+              <span class="rail-copy"><b>${escapeHtml(p.name)}</b><em>${escapeHtml(p.brand)}</em></span>
+              <span class="rail-bar" aria-hidden="true" data-stage-bar="${i}"></span>
+            </button>`).join("")}
+        </nav>
+      </div>
+    </section>`;
 }
 
 /* ============================================================
