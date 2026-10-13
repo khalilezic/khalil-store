@@ -60,7 +60,7 @@ try {
 } catch { /* Storage can be unavailable in private browsing; the default theme still works. */ }
 
 window.addEventListener("pointermove", (event) => {
-  if (isSmallScreen() || window.matchMedia("(prefers-reduced-motion: reduce)").matches || ambientPointerFrame) return;
+  if (document.body.classList.contains("home-theme") || isSmallScreen() || window.matchMedia("(prefers-reduced-motion: reduce)").matches || ambientPointerFrame) return;
   ambientPointerFrame = requestAnimationFrame(() => {
     const pointerX = event.clientX / window.innerWidth;
     const pointerY = event.clientY / window.innerHeight;

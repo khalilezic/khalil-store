@@ -856,17 +856,63 @@ const SCENE_SHOES = [
   ["p1",  "#5B6CFF"], ["p2",  "#8B45FF"], ["p3",  "#D9B26F"],
   ["p9",  "#2F6BFF"], ["p10", "#7C3AED"], ["p6",  "#38BDF8"]
 ];
-const CHAPTER_BLURBS = [
-  "تفصيل مدروس لراحة تدوم طوال اليوم.",
-  "مواد مختارة بعناية لتتحمّل كل خطوة.",
-  "توازن بين الأداء والستايل من أول لبس.",
-  "لمسة أخيرة تجعل الحذاء يشبهك."
-];
+/* Where the camera flies for each chapter. Boxes = alpha bounding box of each
+   photo (px in a 1024 canvas); toe side decides which end is front/heel. */
+const SHOE_BOX = {
+  "p4": [131, 249, 894, 685], "p8": [153, 297, 868, 663], "p7": [130, 304, 890, 673],
+  "runner": [131, 290, 890, 673], "hoop": [137, 208, 887, 685], "cream": [153, 332, 865, 657],
+  "navy": [111, 336, 910, 682], "blackout": [169, 329, 855, 660], "whiteLow": [131, 310, 893, 657]
+};
+const TOE_RIGHT = new Set(["p4", "blackout"]);
+const REGION_INFO = {
+  upper:   { label: "UPPER",   zoom: 1.8, t: .5,  v: .3,  text: "الجزء العلوي يلتفّ حول قدمك بمرونة وتهوية، ويحافظ على شكله مع الاستخدام." },
+  laces:   { label: "LACING",  zoom: 1.9, t: .6,  v: .18, text: "ربط محكم يوزّع الضغط على القدم ويثبّتها دون ضغط زائد." },
+  midsole: { label: "MIDSOLE", zoom: 1.8, t: .5,  v: .8,  text: "طبقة التوسيد تمتص الصدمة وتعيد الطاقة مع كل خطوة." },
+  outsole: { label: "OUTSOLE", zoom: 1.9, t: .42, v: .86, text: "نعل خارجي بنقش يمسك الأرض ويتحمّل المسافات الطويلة." },
+  toe:     { label: "TOE BOX", zoom: 1.9, t: .88, v: .72, text: "مقدمة معزّزة تحمي الأصابع وتمنح دفعة نظيفة عند الانطلاق." },
+  heel:    { label: "HEEL",    zoom: 1.9, t: .1,  v: .5,  text: "منطقة الكعب مثبّتة بإحكام لتمنع الانزلاق وتدعم الكاحل." }
+};
+const PAD_SPECS = ["توازن مثالي بين الأداء والستايل", "تشطيب دقيق في كل تفصيلة", "راحة تدوم طوال اليوم", "ثبات في كل خطوة"];
+const FALLBACK = ["upper", "midsole", "toe", "heel", "outsole", "laces"];
+
+function regionOf(spec) {
+  if (/كعب|ياقة|خلفي/.test(spec)) return "heel";
+  if (/مقدمة/.test(spec)) return "toe";
+  if (/أوسط|توسيد|داخلي|دعامة|EVA|Air/.test(spec)) return "midsole";
+  if (/نعل|جر|مسامير|لوح|قاعدة|نمط/.test(spec)) return "outsole";
+  if (/علوي|جلد|كانفاس|طلاء|شبك|مرن|لمسات/.test(spec)) return "upper";
+  return "laces";
+}
+
+/** 5 camera stops per shoe: overview + 4 detail regions (with their copy). */
+function shoeBox(product) {
+  const key = (product.images[0].match(/([^/]+)-transparent\.png/) || [])[1];
+  return (SHOE_BOX[key] || [130, 300, 890, 670]).map((n) => +(n / 1024).toFixed(4)).join(",");
+}
+
+function sceneChapters(product) {
+  const key = (product.images[0].match(/([^/]+)-transparent\.png/) || [])[1];
+  const [x0, y0, x1, y1] = SHOE_BOX[key] || [130, 300, 890, 670];
+  const w = x1 - x0, h = y1 - y0, right = TOE_RIGHT.has(key);
+  const at = (t, v) => [((right ? x0 + t * w : x1 - t * w) / 1024), (y0 + v * h) / 1024];
+  const specs = [...product.specs.slice(0, 4)];
+  while (specs.length < 4) specs.push(PAD_SPECS[specs.length]);
+  const used = new Set(), stops = [{ title: product.name, text: product.description, focus: [(x0 + x1) / 2048, (y0 + y1) / 2048, 1], label: "OVERVIEW" }];
+  specs.forEach((spec) => {
+    let r = regionOf(spec);
+    if (used.has(r)) r = FALLBACK.find((k) => !used.has(k)) || r;
+    used.add(r);
+    const info = REGION_INFO[r], [fx, fy] = at(info.t, info.v);
+    stops.push({ title: spec, text: info.text, focus: [fx, fy, info.zoom], label: info.label });
+  });
+  return stops;
+}
 
 function renderScene() {
   const shoes = SCENE_SHOES
     .map(([id, tone]) => ({ product: getProductById(id), tone }))
-    .filter((x) => x.product);
+    .filter((x) => x.product)
+    .map((x) => ({ ...x, stops: sceneChapters(x.product) }));
   const n = shoes.length;
   const first = shoes[0];
   return `
@@ -881,8 +927,9 @@ function renderScene() {
 
         <div class="cx-ring">
           ${shoes.map((x, i) => `
-            <button type="button" class="cx-item" data-cx-item data-tone="${x.tone}" aria-label="${escapeHtml(x.product.name)}">
-              <img src="${x.product.images[0]}" alt="${escapeHtml(x.product.name)}" draggable="false" loading="eager">
+            <button type="button" class="cx-item" data-cx-item data-tone="${x.tone}" data-focus="${x.stops.map((st) => st.focus.map((n) => +n.toFixed(4)).join(",")).join(";")}" data-box="${shoeBox(x.product)}" data-regions="${x.stops.map((st) => st.label).join(",")}" aria-label="${escapeHtml(x.product.name)}">
+              <i class="cx-shadow" aria-hidden="true"></i>
+              <img class="cx-main" src="${x.product.images[0]}" alt="${escapeHtml(x.product.name)}" draggable="false" loading="eager">
             </button>`).join("")}
         </div>
 
@@ -898,19 +945,14 @@ function renderScene() {
         </div>
 
         <div class="cx-copy">
-          ${shoes.map((x, i) => {
-            const p = x.product;
-            const rows = [
-              { t: p.name, d: p.description },
-              ...p.specs.slice(0, 4).map((spec, k) => ({ t: spec, d: CHAPTER_BLURBS[k] }))
-            ];
-            return `
+          ${shoes.map((x, i) => `
             <div class="cx-set ${i === 0 ? "on" : ""}" data-cx-chapters>
-              ${rows.map((r, k) => `
-                <article class="cx-ch"><span class="cx-tag">0${k + 1}</span><h2>${escapeHtml(r.t)}</h2><p>${escapeHtml(r.d)}</p></article>`).join("")}
-            </div>`;
-          }).join("")}
+              ${x.stops.map((r, k) => `
+                <article class="cx-ch"><span class="cx-tag">0${k + 1}</span><h2>${escapeHtml(r.title)}</h2><p>${escapeHtml(r.text)}</p></article>`).join("")}
+            </div>`).join("")}
         </div>
+
+        <div class="cx-pin" data-cx-pin aria-hidden="true"><i></i><b data-cx-pinlabel>OVERVIEW</b></div>
 
         <nav class="cx-rail-wrap" aria-label="فصول المنتج">
           ${[0, 1, 2, 3, 4].map((k) => `<button type="button" class="cx-rail" data-cx-rail="${k}" aria-label="الفصل ${k + 1}">0${k + 1}</button>`).join("")}

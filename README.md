@@ -156,3 +156,41 @@ The home hero + showcase were replaced by one full-screen sticky scene
 4. Below: `THE LINEUP.` diagonal row and an Arabic FAQ.
 
 Edit the shoes/colours in `SCENE_SHOES` (render.js). Reduced-motion visitors get a static stack.
+
+---
+
+## v5 — 3D detail camera + smoothness
+
+- Scroll progress is eased per frame (time-based), DOM refs cached, unchanged styles skipped.
+- Each chapter flies a camera to a different part of the shoe (upper, midsole, outsole, toe, heel) with a pin + caption, while the shoe swings in 3D (layered thickness) and spins a full turn in the finale.
+- Camera targets per shoe: `SHOE_BOX`, `TOE_RIGHT`, `REGION_INFO` in `js/render.js`; swing angles: `KF` in `js/scene.js`.
+- Lag fixes: no global `--site-color` transition or pointer-driven ambient wash on the home page, no per-image drop-shadow filters, header blur off on home.
+
+---
+
+## v6 — real 3D shoe (WebGL, no library)
+
+`js/shoe3d.js` turns each product photo into an actual mesh: the alpha mask becomes a distance
+field, is inflated into a depth map, and a front + back surface are welded at the silhouette.
+Real normals give true lighting, specular and a rim light in the stage colour, and the camera
+matches the CSS stage (perspective 1500px), so the model lands exactly where the flat image was.
+`js/scene.js` drives it (swing angles `KF`, light sweep, adaptive resolution on slow devices).
+If WebGL is unavailable the previous CSS layered fallback is used automatically.
+Serve over http (`python3 -m http.server`) — WebGL textures can't load from `file://`.
+
+---
+
+## v7 — shape-preserving 3D (no more warped shoes)
+
+`js/shoe3d.js` no longer "inflates" the photo into a pillow (that bent the texture and stretched
+the sole/toe when rotated). Now each shoe is a **flat slab with a short rounded bevel**:
+
+- front/back faces are perfectly flat, so the photo keeps its exact proportions and details;
+- depth exists only as a thin bevel along the silhouette (3% of image width) + thickness capped by shoe height;
+- grid raised to 190 columns for a cleaner silhouette; lighting keeps the photo's own colours
+  (only the rim picks up the stage colour);
+- `js/scene.js`: swing angles reduced (max ±20°) and the finale is a gentle ±22° sway that settles
+  facing front, instead of a full 360° turn (a flat photo seen edge-on looks like cardboard).
+
+Tuning knobs in `build()`: `HALF` (thickness), `BEVEL` (rim width); `KF` + the finale line in `scene.js` (angles).
+Note: a photo can never reveal the far side of a shoe — for true 360° views, add real GLB models.
